@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chốt ca</title>
+    <th:block th:replace="layout/head"/>
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="layout/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <!------  Main header ----->
+            <div class="app-title">
+                <div class="app-title-child">
+                    <h3>Chốt ca</h3>
+                </div>
+                <div id="clock"></div>
+            </div>
+            <!---- End Main header --->
+            <div class="cards">
+                <div class="row">
+                    <div class=" col-12 row">
+                        <div class="col-lg-7 input-money ml-3 col-sm-12 mb-3" id="input-money">
+                            <h3>Chốt tiền cuối ngày </h3>
+
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/500K.jpg"  style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="500k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol500k" class="form-control col-md-4 " min="0" style="margin-left: 12px" val="500000">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/200K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="200k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol200k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/100K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="100k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol100k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/50K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="50k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol50k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/20K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="20k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol20k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/10K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="10k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol10k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/5K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="5k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol5k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4"> <img src="/assets/images/2K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="2k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol2k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            <div class="row mb-2">
+                                <span class="col-md-4 "> <img src="/assets/images/1K.jpg" style="width: 120px; height: auto"></span>
+                                <input type="number" placeholder="Nhập số tờ" id="1k" class="form-control col-md-3 count" min="0">
+                                <input type="text"  id="Tol1k" class="form-control col-md-4 " min="0" style="margin-left: 12px">
+                            </div>
+                            
+                        </div>
+                        <div class="col-lg-4 ml-3 d-flex align-items-start flex-column col-sm-12">
+                            <div class="row ">
+                                <div class="col-12 mb-3 result">
+                                    <div class="widget widget-tile">
+                                        <div class="chart sparkline" id="spark1"></div>
+                                        <div class="data-info">
+                                            <div class="desc">Tổng tiền</div>
+                                            <div class="value">
+                                                <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
+                                                <span id="total-money" class="number">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3 result">
+                                    <div class="widget widget-tile">
+                                        <div class="chart sparkline" id="spark2"></div>
+                                        <div class="data-info">
+                                            <div class="desc">Tổng thanh toán bằng tiền mặt </div>
+                                            <div class="value">
+                                                <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+                                                <span id="totalOfDay" class="number">0</span>
+                                            </div>
+                                            <div class="desc">Tổng thanh toán bằng chuyển khoản </div>
+                                            <div class="value">
+                                                <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+                                                <span id="tranfsPay" class="number">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3 result">
+                                    <div class="widget widget-tile">
+                                        <div class="chart sparkline" id="spark3"></div>
+                                        <div class="data-info">
+                                            <div class="desc">Chênh lệch</div>
+                                            <div class="value">
+                                                <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+                                                <span id="result" class="number">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex">
+                                <button id="checkFile" class="btn  btn-outline-primary ml-2" type="button" >
+                                    <i class="fa-solid fa-list-check"></i></i> Chốt ca
+                                </button>
+
+                                <button id="exportFile" class="btn  btn-outline-success ml-2 hide" type="button" onclick="Export2Word('exportContent', `chốt ca ${new Date()}.docx`);">
+                                    <i class="fa-solid fa-cloud-arrow-down hide"></i> Xuất file
+                                </button>
+                                <button id="pFile" class="btn  btn-outline-info ml-2 printArea hide" type="button" onclick="printContent('tbCheck')">
+                                    <i class="fa-solid fa-print"></i> in file
+                                </button>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-75 mx-auto" id="exportContent">
+                <table id="tbCheck" class="table table-bordered border-dark printArea">
+                    <thead class="table-dark">
+                    <tr >
+                        <td colspan="3"> <h3 id="checkTitle"> Bảng tính tiền cuối ngày</h3></td>
+                    </tr>
+                    <tr>
+                        <td>Mệnh giá</td>
+                        <td>Số tờ</td>
+                        <td>Thành tiền</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    <style>
+        .input-money,
+        .result{
+            background-color: #FFF;
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .widget.widget-tile {
+            padding: 4px;
+            margin-bottom: 4px;
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+        }
+        .widget {
+            background-color: #fff;
+            border-radius: 6px;
+        }
+        .desc{
+            font-size: 16px;
+            font-weight: 400;
+        }
+        .number{
+            font-size: 36px;
+            font-weight: 400;
+        }
+
+        #tbCheck>thead>tr>td>h3{
+            text-align: center;
+        }
+        #tbCheck>thead>tr>td,
+        #tbCheck>tbody>tr>td{
+            font-size: 16px;
+
+        }
+        @media print {
+            .printArea{
+                display:none;
+            }
+        }
+        .hide{
+            display: none;
+        }
+
+
+    </style>
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+<script>
+
+    const page = {
+        urls: {
+            getReportByYear: AppBase.REPORT_API,
+            getReportOfDay: AppBase.REPORT_API,
+            getReportDayToDay: AppBase.REPORT_API,
+            countOrderCurrentDay: AppBase.REPORT_API,
+            getReportCurrentMonth: AppBase.REPORT_API,
+            getTop5Product: AppBase.REPORT_API
+        },
+        elements: {},
+        commands: {},
+        initializeEventControl: {}
+    }
+    page.elements.totalOfDay = $("#totalOfDay");
+    page.elements.totalMoney = $("#total-money");
+    page.elements.result = $("#result");
+
+    page.elements.count1K = $("#1k");
+    page.elements.count2K = $("#2k");
+    page.elements.count5K = $("#5k");
+    page.elements.count10K = $("#10k");
+    page.elements.count20K = $("#20k");
+    page.elements.count50K = $("#50k");
+    page.elements.count100K = $("#100k");
+    page.elements.count200K = $("#200k");
+    page.elements.count500K = $("#500k");
+
+    page.elements.total1K = $("#Tol1k");
+    page.elements.total2K = $("#Tol2k");
+    page.elements.total5K = $("#Tol5k");
+    page.elements.total10K = $("#Tol10k");
+    page.elements.total20K = $("#Tol20k");
+    page.elements.total50K = $("#Tol50k");
+    page.elements.total100K = $("#Tol100k");
+    page.elements.total200K = $("#Tol200k");
+    page.elements.total500K = $("#Tol500k");
+
+    page.elements.btnCheckFile = $("#checkFile")
+    page.elements.btExportFile = $("#exportFile")
+    page.elements.tableCheck = $("#tbCheck")
+    page.elements.checkTitle = $("#checkTitle")
+    page.elements.tranfsPay = $("#tranfsPay")
+
+
+
+    let totalDay;
+    let totalMoney;
+    let result;
+    let fullName = `[[${fullName}]]`;
+
+
+
+    page.commands.renderReportOfDay = () => {
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json",
+                // "Authorization": "Bearer "+ AppUtils.getCookie('JWT')
+            },
+            type: "GET",
+            url: page.urls.getReportByYear + "/pay-day/"
+        })
+            .done((data) => {
+                console.log(data)
+                totalDay = data.cashPay;
+                if (data.cashPay != null) {
+                    page.elements.totalOfDay.text(formatCurrency(data.cashPay));
+                } else {
+                    page.elements.totalOfDay.text(formatCurrency(0));
+                    totalDay = 0;
+                }
+                if (data.transferPay != null) {
+                    page.elements.tranfsPay.text(formatCurrency(data.transferPay));
+                } else {
+                    page.elements.tranfsPay.text(formatCurrency(0));
+
+                }
+            })
+            .fail((error) => {
+                console.log(error);
+            })
+    }
+    function getCurrentDay() {
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, '0');
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+        return today;
+    }
+    function formatCurrency(input) {
+        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(input)
+    }
+
+    page.commands.handleChangeValueInput = () =>{
+        $('#input-money').on('change','.count', function () {
+
+            page.elements.total1K.val(+page.elements.count1K.val()*1000);
+            page.elements.total2K.val(+page.elements.count2K.val()*2000);
+            page.elements.total5K.val(+page.elements.count5K.val()*5000);
+            page.elements.total10K.val(+page.elements.count10K.val()*10000);
+            page.elements.total20K.val(+page.elements.count20K.val()*20000);
+            page.elements.total50K.val(+page.elements.count50K.val()*50000);
+            page.elements.total100K.val(+page.elements.count100K.val()*100000);
+            page.elements.total200K.val(+page.elements.count200K.val()*200000);
+            page.elements.total500K.val(+page.elements.count500K.val()*500000);
+            totalMoney =    +page.elements.total1K.val() +
+                            +page.elements.total2K.val() +
+                            +page.elements.total5K.val() +
+                            +page.elements.total10K.val() +
+                            +page.elements.total20K.val() +
+                            +page.elements.total50K.val() +
+                            +page.elements.total100K.val() +
+                            +page.elements.total200K.val() +
+                            +page.elements.total500K.val()
+            page.elements.totalMoney.text(formatCurrency(totalMoney));
+            result = +totalMoney - (+totalDay);
+            page.elements.result.text(formatCurrency(result));
+            page.commands.handleColorResult();
+        })
+    }
+    page.commands.handleColorResult = () =>{
+        if(result < 0){
+            page.elements.result.css("color", "#ff471a")
+        }else {
+            page.elements.result.css("color", "#66ff66")
+        }
+    }
+    page.commands.handleCheckFile = () =>{
+        $('#checkFile').on('click', function () {
+            $('#tbCheck tbody').empty();
+            let str = page.commands.renderFile();
+            $('#tbCheck tbody').append(str);
+            document.getElementById("exportFile").classList.remove("hide");
+            document.getElementById("pFile").classList.remove("hide");
+            page.elements.checkTitle.text(`Bảng tính tiền cuối ngày ${formDate(getCurrentDay())}`)
+
+        })
+    }
+    function formDate(date) {
+        let arr = date.split("-")
+        date = arr[2] + "-" + arr[1] + "-" + arr[0]
+        return date;
+    }
+    function formMonth(month){
+        let arr = month.split("-")
+        month =  arr[1] + "-" + arr[0]
+        return month;
+    }
+
+    page.commands.renderFile = () =>{
+        return`
+                        <tr>
+                            <td>500.000 đ</td>
+                            <td>${page.elements.count500K.val()}</td>
+                            <td>${formatCurrency(page.elements.total500K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>200.000 đ</td>
+                            <td>${page.elements.count200K.val()}</td>
+                            <td>${formatCurrency(page.elements.total200K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>100.000 đ</td>
+                            <td>${page.elements.count100K.val()}</td>
+                            <td>${formatCurrency(page.elements.total100K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>50.000 đ</td>
+                            <td>${page.elements.count50K.val()}</td>
+                            <td>${formatCurrency(page.elements.total50K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>20.000 đ</td>
+                            <td>${page.elements.count20K.val()}</td>
+                            <td>${formatCurrency(page.elements.total20K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>10.000 đ</td>
+                            <td>${page.elements.count10K.val()}</td>
+                            <td>${formatCurrency(page.elements.total10K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>5.000 đ</td>
+                            <td>${page.elements.count5K.val()}</td>
+                            <td>${formatCurrency(page.elements.total5K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>2000 đ</td>
+                            <td>${page.elements.count2K.val()}</td>
+                            <td>${formatCurrency(page.elements.total2K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td>1000 đ</td>
+                            <td>${page.elements.count1K.val()}</td>
+                            <td>${formatCurrency(page.elements.total1K.val())}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Doanh thu trong ngày </td>
+                            <td>${formatCurrency(totalDay)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Chênh lệch</td>
+                            <td>${formatCurrency(result)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" > Nhân viên chốt ca: ${fullName}</td>
+                            <td ></td>
+                        </tr>
+        `
+    }
+
+    function Export2Word(element, filename = ''){
+        let preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+        let postHtml = "</body></html>";
+        let html = preHtml+document.getElementById(element).innerHTML+postHtml;
+
+        let blob = new Blob(['\ufeff', html], {
+            type: 'application/msword'
+        });
+
+        // Specify link url
+        let url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+
+        // Specify file name
+        filename = filename?filename+'.doc':'document.doc';
+
+        // Create download link element
+        let downloadLink = document.createElement("a");
+
+        document.body.appendChild(downloadLink);
+
+        if(navigator.msSaveOrOpenBlob ){
+            navigator.msSaveOrOpenBlob(blob, filename);
+        }else{
+            // Create a link to the file
+            downloadLink.href = url;
+
+            // Setting the file name
+            downloadLink.download = filename;
+
+            //triggering the function
+            downloadLink.click();
+        }
+
+        document.body.removeChild(downloadLink);
+    }
+
+
+
+    page.commands.renderDataReport = () => {
+        page.commands.renderReportOfDay();
+        page.commands.handleChangeValueInput();
+        page.commands.handleCheckFile();
+    }
+
+
+    page.commands.loadData = () => {
+
+        page.commands.renderDataReport();
+
+    }
+
+
+    page.initializeEventControl = () => {
+
+        // page.elements.btnShowChartMonthOfYear.on("click", function () {
+        //     let year = page.elements.yearReport.val();
+        //     page.commands.showReportByYear(year);
+        // });
+        //
+        // page.elements.btnShowChartReportDayToDay.on("click", function () {
+        //     page.commands.handleShowReportDayToDay();
+        // })
+    }
+    function printDiv() {
+        // let divContents = document.getElementById("tbCheck").innerHTML;
+        // let a = window.open('', '', 'height=2000, width=2000');
+        // a.document.write('<html>');
+        // a.document.write(divContents);
+        // a.document.write('</body></html>');
+        // a.document.close();
+        // a.print();
+
+        let divToPrint = document.getElementById('tbCheck');
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }
+
+    function printContent(el){
+        let restorepage = $('body').html();
+        let printcontent = $('#' + el).clone();
+        $('body').empty().html(printcontent);
+        window.print();
+        $('body').html(restorepage);
+    }
+
+    $(() => {
+
+        page.commands.loadData();
+        page.initializeEventControl();
+
+    });
+</script>
+
+
+</body>
+
+</html>

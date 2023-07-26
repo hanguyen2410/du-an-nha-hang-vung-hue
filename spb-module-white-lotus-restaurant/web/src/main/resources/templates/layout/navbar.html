@@ -1,0 +1,34 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="navbar">
+
+    <nav id="navbarbar">
+        <i class="bx bx-menu toggle-sidebar"></i>
+        <form action="#">
+            <div class="form-group">
+
+            </div>
+        </form>
+
+        <div class="divider"></div>
+        <div class="profile">
+            <img src="/assets/images/fake-user.png"
+                 alt="">
+            <span th:text="${fullName}"></span>
+            <ul class="profile-menu">
+                <li>
+                    <a href="#"><i class='bx bxs-user-circle'></i> Profile</a>
+                </li>
+                <li>
+                    <a href="#"><i class='bx bxs-cog'></i> Settings</a>
+                </li>
+                <li>
+                    <a href="/logout">
+                        <i class='fa-solid fa-right-from-bracket' style="transform: rotate(180deg);"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</th:block>

@@ -1,0 +1,92 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="sidebar">
+
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <img src="/assets/images/pink-lotus-icon.png" alt="logo" class="sidebar-logo">
+            <span>White Lotus</span>
+        </a>
+        <ul class="nav-menu">
+            <li>
+                <a href="/" class="active"><i class='bx icon bxs-dashboard'></i> Trang chủ</a>
+            </li>
+            <th:block th:if="${ROLE == 'ADMIN' || ROLE == 'MANAGER'}">
+                <li class="divider" data-text="Main">
+                    Danh mục sản phẩm
+                </li>
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class='bx icon bxs-inbox'></i> Sản phẩm
+                        <i class='bx bx-chevron-right icon-right'></i>
+                    </a>
+                    <ul class="dropdown-nav-menu">
+                        <th:block th:if="${ROLE == 'ADMIN'}">
+                            <li>
+                                <a href="/products/create">Thêm mới</a>
+                            </li>
+                        </th:block>
+                        <li>
+                            <a href="/products">Danh sách</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);"><i class='bx icon bxs-group'></i> Nhân viên
+                        <i class='bx bx-chevron-right icon-right'></i>
+                    </a>
+                    <ul class="dropdown-nav-menu">
+                        <th:block th:if="${ROLE == 'ADMIN'}">
+                            <li>
+                                <a href="/staffs/create">Thêm mới</a>
+                            </li>
+                        </th:block>
+                        <li>
+                            <a href="/staffs">Danh sách</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class='bx icon bxs-widget'></i> Bàn
+                        <i class='bx bx-chevron-right icon-right'></i>
+                    </a>
+                    <ul class="dropdown-nav-menu">
+                        <li>
+                            <a href="/tables/createTable">Thêm mới</a>
+                        </li>
+                        <li>
+                            <a href="/tables">Danh sách</a>
+                        </li>
+                    </ul>
+                </li>
+            </th:block>
+            <th:block th:if="${ROLE == 'ADMIN' || ROLE == 'MANAGER'|| ROLE == 'CASHIER'}">
+                <li class="divider" data-text="Main">
+                    Danh mục thống kê
+                </li>
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class='bx icon bxs-chart'></i> Thống kê
+                        <i class='bx bx-chevron-right icon-right'></i>
+                    </a>
+                    <ul class="dropdown-nav-menu">
+                        <li>
+                            <a href="/daily">Thống kê ngày</a>
+                        </li>
+                        <th:block th:if="${ROLE == 'ADMIN'}">
+                            <li>
+                                <a href="/report">Thống kê - Doanh thu</a>
+                            </li>
+                        </th:block>
+                        <li>
+                            <a href="/bills">Danh sách hóa đơn</a>
+                        </li>
+
+                    </ul>
+                </li>
+            </th:block>
+        </ul>
+    </section>
+
+</th:block>

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Danh sách sản phẩm</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+
+    <!-- --------------------------------------Modal Update------------------------------------- -->
+    <div class="cover-modal">
+        <div id="modalUpdateProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chính sửa thông tin sản phẩm</h5>
+                        <i class="fa-solid fa-xmark btn-close" data-bs-dismiss="modal" aria-label="Close"></i>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-alert-danger hide"></div>
+                        <form id="formUpdateProduct" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="form-group col-md-8">
+                                            <label class="control-label" for="titleCre">Tên</label>
+                                            <input class="form-control" type="text" placeholder="Enter Product Name" id="titleUp" name="titleUp">
+                                        </div>
+                                        <div class="form-check form-switch col-md-4">
+                                            <label class="control-label col-12" >Món nấu</label>
+                                            <div class="ml-3" id="cookingUp">
+                                                <div class="form-check form-check">
+                                                    <input class="form-check-input" type="radio" name="cookingUp" id="inlineRadio1Up" value="false">
+                                                    <label class="form-check-label" for="inlineRadio1">Phục vụ sẳn</label>
+                                                </div>
+                                                <div class="form-check form-check">
+                                                    <input class="form-check-input" type="radio" name="cookingUp" id="inlineRadio2Up" value="true" checked>
+                                                    <label class="form-check-label" for="inlineRadio2">Nhập bếp</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="priceUp">Giá</label>
+                                            <input class="form-control" type="text" placeholder="Enter Price Product" id="priceUp" name="priceUp">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="unitUp">Phân loại</label>
+                                            <select class="form-control" id="unitUp" name="unitUp">
+                                                <option value="-1" selected>--Loại--</option>
+                                                <th:block th:each="item: ${units}">
+                                                    <option th:text="${item.title}" th:value="${item.id}">
+
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="categoryUp">Đơn vị</label>
+                                            <select class="form-control" id="categoryUp" name="categoryUp">
+                                                <option value="-1" selected>--Đơn vị--</option>
+                                                <th:block th:each="item: ${categories}">
+                                                    <option th:text="${item.title}" th:value="${item.id}">
+
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="loader hide">
+                                        <div id="loading"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group  col-md-12">
+                                            <label class="control-label" for="descriptionUp">Mô tả</label>
+                                            <textarea id="descriptionUp" class="form-control" rows="4" placeholder="Description" name="descriptionUp"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 form-group upload-image">
+                                    <div>
+                                        <section>
+                                            <div class="wrapper-images">
+                                                <div class="image-preview">
+                                                    <canvas id="canvasUp"></canvas>
+                                                </div>
+                                                <div class="content" style="opacity: 1;">
+                                                    <div class="icon">
+                                                        <i class="ion ion-md-cloud-upload"></i>
+                                                    </div>
+                                                    <div class="text">
+                                                        Chưa có tệp nào được chọn!
+                                                    </div>
+                                                    <div class="text">
+                                                        Dung lượng tối đa = 2MB
+                                                    </div>
+                                                </div>
+                                                <div class="clear-image-preview">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                                <div class="file-name">
+                                                    Sửa ảnh
+                                                </div>
+                                            </div>
+                                            <input type="file" id="imageFileUp" accept="image/jpeg, image/png" hidden="">
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnUpdateProduct" class="btn btn-save" type="button">
+                            <i class="fa-solid fa-square-plus"></i> Sửa</button>
+                        <button class="btn btn-cancel" type="button" data-bs-dismiss="modal"><i class="fa-solid fa-square-xmark"></i> Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ------------------------------------End Modal Update----------------------------------- -->
+
+    <!-- --------------------------------------Modal Create------------------------------------- -->
+    <div class="cover-modal ">
+        <div id="modalCreateProduct" class="modal fade " data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thêm sản phẩm</h5>
+                        <i class="fa-solid fa-xmark btn-close" data-bs-dismiss="modal" aria-label="Close"></i>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-alert-danger hide"></div>
+                        <form id="formCreateProduct" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="form-group col-md-8">
+                                            <label class="control-label" for="titleCre">Tên</label>
+                                            <input class="form-control" type="text" placeholder="Nhập tên" id="titleCre" name="titleCre">
+                                        </div>
+                                        <div class="form-check form-switch col-md-4">
+                                            <label class="control-label col-12" >Món nấu</label>
+                                            <div class="ml-3" id="cookingCre">
+                                                <div class="form-check form-check">
+                                                    <input class="form-check-input" type="radio" name="cookingCre" id="inlineRadio1" value="false">
+                                                    <label class="form-check-label" for="inlineRadio1">Phục vụ sẳn</label>
+                                                </div>
+                                                <div class="form-check form-check">
+                                                    <input class="form-check-input" type="radio" name="cookingCre" id="inlineRadio2" value="true" checked>
+                                                    <label class="form-check-label" for="inlineRadio2">Nhập bếp</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="priceCre">Giá</label>
+                                            <input class="form-control" type="text" placeholder="Nhập giá" id="priceCre" name="priceCre">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="categoryCre">Phân loại</label>
+                                            <select class="form-control" id="categoryCre" name="categoryCre">
+                                                <option value="-1" selected>--Loại--</option>
+                                                <th:block th:each="item: ${categories}">
+                                                    <option th:text="${item.title}" th:value="${item.id}">
+
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="control-label" for="unitCre">Đơn vị</label>
+                                            <select class="form-control" id="unitCre" name="unitCre">
+                                                <option value="-1" selected>--Đơn vị--</option>
+                                                <th:block th:each="item: ${units}">
+                                                    <option th:text="${item.title}" th:value="${item.id}">
+
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group  col-md-12">
+                                            <label class="control-label" for="descriptionCre">Description</label>
+                                            <textarea id="descriptionCre" class="form-control" rows="4" placeholder="Description" name="descriptionCre"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 form-group upload-image">
+                                    <div>
+                                        <section>
+                                            <div class="wrapper-images">
+                                                <div class="image-preview">
+                                                    <canvas id="canvasCre"></canvas>
+                                                </div>
+                                                <div class="content" style="opacity: 1;">
+                                                    <div class="icon">
+                                                        <i class="ion ion-md-cloud-upload"></i>
+                                                    </div>
+                                                    <div class="text">
+                                                        Chưa có tệp nào được chọn!
+                                                    </div>
+                                                    <div class="text">
+                                                        Dung lượng tối đa = 2MB
+                                                    </div>
+                                                </div>
+                                                <div class="clear-image-preview">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                                <div class="file-name">
+                                                    Sửa ảnh
+                                                </div>
+                                            </div>
+                                            <input type="file" id="imageFileCre" accept="image/jpeg, image/png" hidden="">
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnCreateProduct" class="btn btn-save" type="button">
+                            <i class="fa-solid fa-square-plus me-2"></i> Thêm
+                        </button>
+                        <button class="btn btn-cancel" type="button" data-bs-dismiss="modal"><i class="fa-solid fa-square-xmark"></i> Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ------------------------------------End Modal Create----------------------------------- -->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="layout/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <!------  Main header ----->
+            <div class="app-title">
+                <div class="app-title-child">
+                    <h3>Danh sách sản phẩm</h3>
+                </div>
+                <div id="clock"></div>
+            </div>
+            <!---- End Main header --->
+            <div class="cards d-flex flex-column">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <div class="row element-button">
+                                    <div class="col-lg-3">
+                                        <a id="btnShowModalCreate" class="btn btn-add" title="Thêm">
+                                            <i class="fas fa-plus"></i>
+                                            Tạo mới sản phẩm</a>
+                                    </div>
+                                    <div class="col-lg-2"></div>
+                                    <div class="col-lg-7">
+                                        <form action="#" class="form-group d-flex float-right" onsubmit="return false" id="searchform">
+                                            <div class="mr-2">
+                                                <input type="text" id="keyWord" class="form-control search" placeholder="Tìm kiếm...">
+                                            </div>
+                                            <div class="mr-2">
+                                                <select class="form-control select2-container search" id="categoryFilter">
+                                                    <option value="-1" selected>--Danh mục--</option>
+                                                    <th:block th:each="item: ${categories}">
+                                                        <option th:text="${item.title}" th:value="${item.id}">
+
+                                                        </option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <table id="tbProduct" class="table table-hover table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+
+                                            <th>Tên sản phẩm</th>
+                                            <th>Ảnh</th>
+                                            <th>Giá</th>
+                                            <th>Loại</th>
+                                            <th>Đơn vị</th>
+                                            <th>Mô tả</th>
+                                            <th class="text-center ">...</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row" id="body-foot">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+
+    <script>
+
+        const page = {
+            urls: {
+                getAllProducts: AppBase.API_PRODUCT + '/get-all',
+                findProductById: AppBase.API_PRODUCT,
+                createProduct: AppBase.API_PRODUCT + '/create',
+                updateProduct: AppBase.API_PRODUCT,
+                deleteProduct: AppBase.API_PRODUCT,
+
+            },
+            elements: {},
+            loadData: {},
+            commands: {},
+            dialogs: {
+                elements: {},
+                loadData: {},
+                commands: {},
+            }
+        }
+
+        let currentProductId;
+        let currentPageNumber = 0;
+        let role = `[[${ROLE}]]`;
+        let isCookCre = $('input[name="cookingCre"]:checked').val();
+        let isCookUp = $('input[name="cookingUp"]:checked').val();
+
+        let product = new Product();
+        let productAvatar = new ProductAvatar();
+        let unit = new Unit();
+
+        page.dialogs.elements.keyWord = $('#keyWord');
+        page.dialogs.elements.categoryFilter = $('#categoryFilter');
+
+        page.dialogs.elements.titleCre = $('#titleCre');
+        page.dialogs.elements.priceCre = $('#priceCre');
+        page.dialogs.elements.unitCre = $('#unitCre');
+        page.dialogs.elements.categoryCre = $('#categoryCre');
+        page.dialogs.elements.descriptionCre = $('#descriptionCre');
+
+        page.dialogs.elements.titleUp = $('#titleUp');
+        page.dialogs.elements.priceUp = $('#priceUp');
+        page.dialogs.elements.unitUp = $('#unitUp');
+        page.dialogs.elements.categoryUp = $('#categoryUp');
+        page.dialogs.elements.descriptionUp = $('#descriptionUp');
+
+        page.dialogs.elements.modalCreateProduct = $('#modalCreateProduct');
+        page.dialogs.elements.modalUpdateProduct = $('#modalUpdateProduct');
+
+        page.dialogs.elements.btnShowModalCreate = $('#btnShowModalCreate');
+        page.dialogs.elements.searchform = $('#searchform');
+        page.dialogs.elements.btnCreate = $('#btnCreateProduct');
+        page.dialogs.elements.btnUpdate = $('#btnUpdateProduct');
+
+        page.dialogs.elements.formCreateProduct = $('#formCreateProduct');
+        page.dialogs.elements.formUpdateProduct = $('#formUpdateProduct');
+
+        page.dialogs.elements.wrapper = $("section .wrapper-images");
+        page.dialogs.elements.wrapperContent = $("section .wrapper-images .content");
+        page.dialogs.elements.imagePreview = $("section .image-preview");
+        page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
+
+        page.dialogs.elements.imageFileCre = $("#imageFileCre");
+        page.dialogs.elements.imagePreviewCanvas = $("section .image-preview canvas");
+        page.dialogs.elements.canvas = $("#canvasCre");
+        page.dialogs.elements.context = page.dialogs.elements.canvas[0].getContext('2d');
+        page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+        page.dialogs.elements.divImagePreview = $("#modalCreateProduct div.image-preview");
+        page.dialogs.elements.divFileName = $("#modalCreateProduct div.file-name");
+
+        page.dialogs.elements.imageFileUp = $("#imageFileUp");
+        page.dialogs.elements.imagePreviewCanvasUp = $("section .image-preview #canvasUp");
+        page.dialogs.elements.canvasUp = $("#canvasUp");
+        page.dialogs.elements.contextUp = page.dialogs.elements.canvasUp[0].getContext('2d');
+        page.dialogs.elements.imagePreviewCanvasUp.css("display", "none");
+        page.dialogs.elements.divImagePreviewUp = $("#modalUpdateProduct div.image-preview");
+        page.dialogs.elements.divFileNameUp = $("#modalUpdateProduct div.file-name");
+
+        page.elements.loader = $(".bg-loading");
+
+        page.dialogs.commands.doUpdate = () => {
+
+            page.commands.showLoading();
+
+            let title = page.dialogs.elements.titleUp.val().trim();
+            let price = page.dialogs.elements.priceUp.val().trim();
+            let unit_id = +page.dialogs.elements.unitUp.val().trim();
+            let unit_title = page.dialogs.elements.unitUp.find("option:selected").text();
+            let category_id = +page.dialogs.elements.categoryUp.val().trim();
+            let category_title = page.dialogs.elements.categoryUp.find("option:selected").text();
+            let description = page.dialogs.elements.descriptionUp.val().trim();
+            let file = page.dialogs.elements.imageFileUp[0].files[0];
+            let cooking = $('input[name="cookingUp"]:checked').val();;
+
+            if(file == undefined){
+                file = null
+            }
+
+            let formData = new FormData();
+            formData.append("title", title);
+            formData.append("price", price);
+            formData.append("unitId", unit_id);
+            formData.append("categoryId", category_id);
+            formData.append("description", description);
+            formData.append("file", file);
+            formData.append("cooking", cooking);
+
+
+            $.ajax({
+                type: "PATCH",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.updateProduct + '/' + currentProductId,
+                data: formData
+            })
+                .done((data) => {
+                    let product = data;
+
+                    page.dialogs.commands.getAllProducts();
+
+                    page.dialogs.elements.modalUpdateProduct.modal('hide');
+
+                    toastSuccess("Chỉnh sửa sản phẩm <b>" + product.title+ "</b> thành công.");
+
+                })
+                .fail((jqXHR) => {
+
+                    let str = '';
+
+                    if (jqXHR.status === 401) {
+                        AppBase.SweetAlert.showError401();
+                    } else {
+                        if (jqXHR.status === 403) {
+                            AppBase.SweetAlert.showError403();
+                        } else {
+                            if (jqXHR.responseJSON) {
+                                if (jqXHR.responseJSON.message) {
+                                    str += `<label id="message-error" class="error" for="message">${jqXHR.responseJSON.message}</label>`;
+                                } else {
+                                    $.each(jqXHR.responseJSON, function (key, value) {
+                                        str += `<label id="${key}-error" class="error" for="${key}">${value}</label>`;
+                                        $("#" + key).addClass("error");
+                                    });
+                                }
+                                page.dialogs.elements.formUpdateProduct.removeClass("hide").addClass("show");
+                                page.dialogs.elements.formUpdateProduct.css("display", "block")
+                                page.dialogs.elements.formUpdateProduct.append(str);
+                            } else {
+                                AppBase.SweetAlert.showError500();
+                            }
+                        }
+                    }
+                }).always(function () {
+                page.commands.closeLoading();
+            })
+        }
+
+        page.dialogs.commands.doCreate = () => {
+
+            page.commands.showLoading();
+
+            let title = page.dialogs.elements.titleCre.val().trim();
+            let price = page.dialogs.elements.priceCre.val().trim();
+            let unit_id = +page.dialogs.elements.unitCre.val().trim();
+            let unit_title = page.dialogs.elements.unitCre.find("option:selected").text();
+            let category_id = +page.dialogs.elements.categoryCre.val().trim();
+            let category_title = page.dialogs.elements.categoryCre.find("option:selected").text();
+            let description = page.dialogs.elements.descriptionCre.val().trim();
+            let file = page.dialogs.elements.imageFileCre[0].files[0];
+            let cooking = $('input[name="cookingCre"]:checked').val();
+
+            let formData = new FormData();
+            formData.append("title", title);
+            formData.append("price", price);
+            formData.append("unitId", unit_id);
+            formData.append("categoryId", category_id);
+            formData.append("description", description);
+            formData.append("file", file);
+            formData.append("cooking", cooking);
+
+
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.createProduct,
+                data: formData
+            })
+                .done((data) => {
+                    let product = data;
+                    page.dialogs.elements.formCreateProduct[0].reset();
+
+                    page.dialogs.commands.clearImagePreview();
+
+                    page.dialogs.commands.getAllProducts();
+
+                    page.dialogs.elements.modalCreateProduct.modal('hide');
+
+                    toastSuccess("Thêm mới sản phẩm <b>" + product.title+ "</b> thành công.");
+
+                })
+                .fail((jqXHR) => {
+
+                    let str = '';
+
+                    if (jqXHR.status === 401) {
+                        AppBase.SweetAlert.showError401();
+                    } else {
+                        if (jqXHR.status === 403) {
+                            AppBase.SweetAlert.showError403();
+                        } else {
+                            if (jqXHR.responseJSON) {
+                                if (jqXHR.status === 401) {
+                                    AppBase.SweetAlert.showError401();
+                                }
+                                if (jqXHR.responseJSON.message) {
+                                    str += `<label id="message-error" class="error" for="message">${jqXHR.responseJSON.message}</label>`;
+                                } else {
+                                    $.each(jqXHR.responseJSON, function (key, value) {
+                                        str += `<label id="${key}-error" class="error" for="${key}">${value}</label>`;
+                                        $("#" + key).addClass("error");
+                                    });
+                                }
+                                page.dialogs.elements.formCreateProduct.removeClass("hide").addClass("show");
+                                page.dialogs.elements.formCreateProduct.css("display", "block")
+                                page.dialogs.elements.formCreateProduct.append(str);
+                            } else {
+                                AppBase.SweetAlert.showError500();
+                            }
+                        }
+                    }
+                }).always(function () {
+                page.commands.closeLoading();
+            })
+        }
+
+        page.loadData.findProductById = (id) => {
+            return $.ajax({
+                type: 'GET',
+                url: page.urls.findProductById + '/' + id
+            })
+                .done((data) => {
+
+                })
+                .fail(() => {
+                    ;
+                })
+        }
+
+        page.dialogs.commands.getAllProducts = () => {
+
+            page.commands.showLoading();
+
+            let currentKeyWord = page.dialogs.elements.keyWord.val();
+            let currentCategoryFilter = +page.dialogs.elements.categoryFilter.val().trim() ;
+
+            console.log('...check currentPageNumber ', currentPageNumber)
+
+            let obj = {
+                currentPageNumber: currentPageNumber,
+                keyWord: currentKeyWord,
+                categoryFilter: currentCategoryFilter
+            }
+
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                url: page.urls.getAllProducts,
+                data: JSON.stringify(obj),
+            })
+                .done((data) => {
+                    if (data == undefined){
+                        page.commands.closeLoading();
+                        toastFail("Không có dử liệu phù hợp");
+
+                    }
+
+                    $('#tbProduct tbody tr').remove();
+
+                    console.log(data)
+
+                    listProduct = data.content;
+
+                    currentPageNumber = data.pageable.pageNumber;
+
+                    totalElements = data.totalElements;
+
+                    totalPages = data.totalPages;
+
+                    $.each(listProduct, (i, item) => {
+                        product = item;
+
+                        productAvatar = item.productAvatar;
+
+                        let str = page.commands.renderProduct(product, productAvatar);
+                        $('#tbProduct tbody').append(str);
+
+                    })
+
+                    let strPage = page.commands.renderPagination(currentPageNumber, totalElements, totalPages );
+                    $('#body-foot').empty().append(strPage);
+
+                    page.commands.addEventClick();
+                    page.dialogs.commands.authorization();
+                    
+                })
+                .fail(() => {
+                    toastFail("Result Fail");
+                })
+                .always(function () {
+                page.commands.closeLoading();
+                })
+        }
+
+        page.commands.addEventClick = () => {
+            page.commands.addEventEditClick();
+            page.commands.addEventDeleteClick();
+            page.commands.addEventChangePage();
+            // page.commands.addeventSort();
+        }
+
+        page.commands.addEventEditClick = () => {
+
+            $('#tbProduct').on('click','.edit', function () {
+
+                page.dialogs.elements.formUpdateProduct[0].reset();
+
+                let productId = $(this).data('id');
+
+                page.loadData.findProductById(productId).then((data) => {
+                    console.log(data)
+
+                    product = data;
+                    productAvatar= data.productAvatar;
+                    unit = data.unitId;
+                    category = data.category
+
+                    currentProductId = productId;
+
+                    page.dialogs.elements.titleUp.val(product.productTitle);
+                    page.dialogs.elements.priceUp.val(product.price);
+                    page.dialogs.elements.unitUp.val(unit);
+                    page.dialogs.elements.categoryUp.val(category.id)
+                    page.dialogs.elements.descriptionUp.val(product.description);
+
+                    page.dialogs.commands.loadImageToCanvas(null, "URL", productAvatar.fileUrl);
+                    $("input[name=cookingUp]").val([product.cooking]);
+
+                    page.dialogs.elements.modalUpdateProduct.modal('show');
+
+
+
+                })
+                    .catch(() => {
+                        toastError("Product ID is not exist");
+                    });
+            })
+        }
+
+        page.commands.addEventDeleteClick = () => {
+
+            $('#tbProduct').on('click','.delete', function () {
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        let productId = $(this).data('id');
+                        console.log('productId : ' + productId)
+
+                        page.loadData.findProductById(productId).then((data) => {
+                            $.ajax({
+                                headers: {
+                                    'accept': 'application/json',
+                                    'content-type': 'application/json'
+                                },
+                                type: 'DELETE',
+                                url: page.urls.deleteProduct + '/' + productId,
+                            })
+                                .done((data) => {
+
+                                    $('#tr_' + productId).remove();
+
+                                    currentPageNumber = $('#pageActive').data('page');
+
+                                    page.dialogs.commands.getAllProducts();
+
+                                    page.commands.addEventClick();
+
+                                    Swal.fire({
+                                        position: 'middle-end',
+                                        icon: 'success',
+                                        title: 'Deleted Successfully',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+                                })
+                                .fail((jqXHR) => {
+                                    if (jqXHR.status === 401) {
+                                        AppBase.SweetAlert.showError401();
+                                    } else {
+                                        Swal.fire({
+                                            position: 'center',
+                                            icon: 'error',
+                                            title: 'Không tồn tại sản phẩm này',
+                                            showConfirmButton: true
+                                        })
+
+                                    }
+                                })
+                        })
+                    }
+                })
+                    .catch(() => {
+                        toastError("Product's id not exist");
+                    });
+
+
+            })
+        }
+
+        page.commands.addEventChangePage = () => {
+            $('.page-link').on('click', function () {
+
+                let pageNumber = $(this).data('page');
+
+                currentPageNumber = pageNumber;
+
+                page.dialogs.commands.getAllProducts();
+            })
+        }
+
+        page.dialogs.elements.formUpdateProduct.validate({
+            rules: {
+                titleUp: {
+                    required: true,
+                },
+                priceUp: {
+                    required: true,
+                    min: 100,
+                    max: 999999999,
+                    number: true
+                },
+                unitUp: {
+                    required: true,
+                    number: true
+                },
+                categoryUp: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                titleUp: {
+                    required: "Vui lòng nhập tên sản phẩm.",
+                    },
+                priceUp: {
+                    required: "Vui lòng nhập giá.",
+                    min: "Giá sản phẩm tối thiểu là 100.000 VNĐ.",
+                    max: "Giá sản phẩm tối đa là 999.999.999 VNĐ.",
+                    number: "Giá sản phẩm phải là số."
+                },
+                unitUp: {
+                    required: "Vui lòng nhập loại sản phẩm.",
+                    number: "Loại sản phẩm không đúng. vui lòng nhập lại."
+                },
+                categoryUp: {
+                    required: "Vui lòng nhập loại sản phâ.",
+                    number: "mã sản phẩm không đúng. vui lòng nhập lại."
+                }
+            },
+            submitHandler: function () {
+                page.dialogs.commands.doUpdate();
+            }
+        })
+
+        page.dialogs.elements.formCreateProduct.validate({
+            rules: {
+                titleCre: {
+                    required: true,
+                },
+                priceCre: {
+                    required: true,
+                    min: 100,
+                    max: 999999999,
+                    number: true
+                },
+                unitCre: {
+                    required: true,
+                    number: true
+                },
+                categoryCre: {
+                    required: true,
+                    number: true
+
+                }
+            },
+            messages: {
+                titleCre: {
+                    required: "Vui lòng nhập tên sản phẩm.",
+                   },
+                priceCre: {
+                    required: "Vui lòng nhập giá.",
+                    min: "Giá sản phẩm tối thiểu là 100.000 VNĐ.",
+                    max: "Giá sản phẩm tối đa là 999.999.999 VNĐ.",
+                    number: "Giá sản phẩm phải là số."
+                },
+                unitCre: {
+                    required: "Vui lòng nhập loại sản phẩm.",
+                    number: "Loại sản phẩm không đúng. vui lòng nhập lại."
+                },
+                categoryCre: {
+                    required: "Vui lòng nhập loại sản phâ.",
+                    number: "mã sản phẩm không đúng. vui lòng nhập lại."
+                }
+            },
+            submitHandler: function () {
+                page.dialogs.commands.doCreate();
+            }
+        })
+        page.dialogs.elements.btnCreate.on('click' , () => {
+            page.dialogs.elements.formCreateProduct.trigger('submit');
+        })
+
+        page.dialogs.elements.btnUpdate.on('click' , () => {
+            page.dialogs.elements.formUpdateProduct.trigger('submit');
+        })
+
+        page.dialogs.elements.searchform.on('change' ,'.search',() => {
+            currentPageNumber = 0;
+            page.dialogs.commands.getAllProducts();
+        })
+
+        page.commands.renderPagination = (currentPageNumber, totalElements, totalPages) => {
+            let str = `
+                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                    [ 1 -- 10 ] của [ ${totalElements} ] sản phẩm
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                    <ul class="pagination">
+                `;
+
+
+            if (currentPageNumber != 0) {
+                str += `
+                            <li class="paginate_button page-item previous" id="sampleTable_previous">
+                                <a class="page-link" data-page="${currentPageNumber-1}" >Lùi</a>
+                            </li>
+                            `;
+            } else {
+                str += `
+                            <li class="paginate_button page-item previous disabled" id="sampleTable_previous">
+                                <a class="page-link">Lùi</a>
+                            </li>
+                            `;
+            }
+
+            for(let i = 1; i <= totalPages ; i++ ) {
+                if ((i - 1 ) === currentPageNumber) {
+                    str += `
+                            <li class="paginate_button page-item active">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+                }
+                else {
+                    str += `
+                            <li class="paginate_button page-item">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+                }
+            }
+
+            if(currentPageNumber != (totalPages - 1)){
+                str += `
+                            <li class="paginate_button page-item next" id="sampleTable_next">
+                                <a class="page-link" data-page="${currentPageNumber+1}">Tiếp</a>
+                            </li>
+                        `;
+            } else {
+                str += `
+                            <li class="paginate_button page-item next disabled" id="sampleTable_next">
+                                <a class="page-link">Tiếp</a>
+                            </li>
+                        `;
+            }
+
+            return str;
+        }
+
+        page.commands.renderProduct = (product, productAvatar) => {
+            let image_thumbnail = `
+                        ${AppBase.API_CLOUDINARY}/${AppBase.SCALE_IMAGE_W_90_H_90_Q_100}/${productAvatar.fileFolder}/${productAvatar.fileName}
+                    `;
+            return `
+                            <tr id="tr_${product.productId}" class="hover" style="font-weight: 600;">
+
+                                            <td>${product.productTitle}</td>
+                                            <td style="width: 110px"><img src="${image_thumbnail}" alt="" class="img-product"></td>
+                                            <td>${formatCurrency(product.price)}</td>
+                                            <td><span class="badge bg-success">${product.category.title}</span></td>
+                                            <td>${product.unitTitle}</td>
+                                            <td>${product.description}</td>
+                                            <td class="align-items-center">
+                                                <div class="iq-card-header-toolbar d-flex align-items-center justify-content-center">
+                                                    <div class="dropdown">
+                                                         <span class="dropdown-toggle text-primary" id="dropdownMenuButton5" data-toggle="dropdown" >
+                                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                         </span>
+                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+                                                             <button data-id="${product.productId}" class="btn btn-primary dropdown-item delete" type="button" title="Xóa">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                             </button>
+                                                             <button data-id="${product.productId}" class="btn btn-primary dropdown-item edit" type="button" title="Sửa" data-toggle="modal" data-target="#ModalUP">
+                                                                <i class="fas fa-edit"></i>
+                                                             </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                            </tr>
+                        `;
+        }
+
+        function formatCurrency(input) {
+            return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(input)
+        }
+
+        page.commands.closeLoading = () => {
+            $('.lds-ring').addClass("hide");
+            page.elements.loader.addClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', false);
+            page.dialogs.elements.btnUpdate.prop('disabled', false);
+        }
+        page.commands.showLoading = () => {
+            $('.lds-ring').removeClass("hide");
+            page.elements.loader.removeClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', true);
+            page.dialogs.elements.btnUpdate.prop('disabled', true);
+        }
+
+        page.dialogs.commands.loadImageToCanvas = (imageFile, fileType, imageUrl) => {
+            page.dialogs.elements.imagePreviewCanvas.css("display", "");
+            page.dialogs.elements.wrapper.addClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 0);
+
+            page.dialogs.elements.imagePreviewCanvasUp.css("display", "");
+            page.dialogs.elements.wrapper.addClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 0);
+
+            let imageObj = new Image();
+
+            imageObj.onload = function () {
+                page.dialogs.elements.context.canvas.width = imageObj.width;
+                page.dialogs.elements.context.canvas.height = imageObj.height;
+                page.dialogs.elements.context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
+
+                page.dialogs.elements.contextUp.canvas.width = 445;
+                page.dialogs.elements.contextUp.canvas.height = 345;
+                page.dialogs.elements.contextUp.drawImage(imageObj, 0, 0, 445, 345);
+            };
+
+            if (fileType === "BINARY") {
+                imageObj.src = URL.createObjectURL(imageFile);
+            } else {
+                imageObj.src = imageUrl;
+            }
+        }
+
+        page.dialogs.commands.changeImagePreview = (elem) => {
+            let imageFile = elem[0].files[0];
+
+            if (imageFile) {
+                let reader = new FileReader();
+
+                reader.readAsDataURL(imageFile);
+
+                reader.onload = function (e) {
+                    if (e.target.readyState === FileReader.DONE) {
+                        page.dialogs.commands.loadImageToCanvas(imageFile, "BINARY", null);
+                    }
+                }
+            } else {
+                page.dialogs.commands.clearImagePreview();
+            }
+        }
+
+        page.dialogs.commands.clearImagePreview = () => {
+            page.dialogs.elements.imageFileCre.val("");
+            page.dialogs.elements.imageFileUp.val("");
+            page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+            page.dialogs.elements.wrapper.removeClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 1);
+        }
+        page.dialogs.commands.authorization = () =>{
+            if(!(role === "ADMIN")){
+                $(".delete").addClass("d-none");
+                $(".edit").addClass("d-none");
+                page.dialogs.elements.btnShowModalCreate.addClass("d-none");
+            }
+        }
+
+        page.commands.loadData = () => {
+            page.dialogs.commands.getAllProducts();
+        }
+
+        page.initializeControlEvent = () => {
+
+            page.dialogs.elements.divImagePreview.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+
+            page.dialogs.elements.divFileName.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+
+            page.dialogs.elements.divImagePreviewUp.on('click', () => {
+                page.dialogs.elements.imageFileUp.trigger('click');
+            })
+
+            page.dialogs.elements.divFileNameUp.on('click', () => {
+                page.dialogs.elements.imageFileUp.trigger('click');
+            })
+
+            page.dialogs.elements.imageFileCre.on("change", function () {
+                page.dialogs.commands.changeImagePreview(page.dialogs.elements.imageFileCre);
+            });
+
+            page.dialogs.elements.imageFileUp.on("change", function () {
+                page.dialogs.commands.changeImagePreview(page.dialogs.elements.imageFileUp);
+            });
+
+            page.dialogs.elements.btnClearImagePreview.on('click', () => {
+                page.dialogs.commands.clearImagePreview();
+            })
+
+            page.dialogs.elements.btnShowModalCreate.on('click', () => {
+                page.dialogs.elements.formCreateProduct[0].reset();
+                page.dialogs.commands.clearImagePreview();
+                page.dialogs.elements.modalCreateProduct.modal('show');
+            })
+
+        }
+
+        $(() => {
+            page.commands.loadData();
+
+            page.initializeControlEvent();
+        })
+
+    </script>
+
+</body>
+
+</html>

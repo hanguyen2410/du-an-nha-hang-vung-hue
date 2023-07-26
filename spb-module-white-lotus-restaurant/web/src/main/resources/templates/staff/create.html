@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>White Lotus | Staffs</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="layout/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <!------  Main header ----->
+            <div class="app-title">
+<!--                <div class="col-lg-9">-->
+                    <div class="app-title-child">
+                        <h3>Thêm nhân viên</h3>
+                    </div>
+<!--                </div>-->
+                <div class="col-lg-3 div-ds-sanpham">
+                    <a href="/staffs" class="btn btn-delete print-file ds-sanpham" title="Danh sách sản phẩm">
+                        <i class="fa-solid fa-list"></i>
+                        Danh sách nhân viên
+                    </a>
+                </div>
+            </div>
+            <!---- End Main header --->
+            <div class="cards">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <div class="row">
+                                    <!-------------------------------- EXACTLY HERE ----------------------------------->
+                                    <div style="width: 100% !important; margin-left: 16px">
+                                        <form id="frmCreateStaff" enctype="multipart/form-data" onsubmit="return false;">
+                                            <div class="row">
+                                                <div class="col-md-8 ">
+                                                    <div class="row">
+                                                        <div class="col-md-6 " >
+                                                            <label class="control-label" for="fullNameCre">Họ tên</label>
+                                                            <input type="text" class="form-control" id="fullNameCre" name="fullNameCre">
+                                                        </div>
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label" for="dobCre">Ngày Sinh</label>
+                                                            <input type="date" class="form-control" id="dobCre" name="dobCre">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 " >
+                                                            <label class="control-label" for="phoneCre">Điện Thoại</label>
+                                                            <input type="text" class="form-control" id="phoneCre" name="phoneCre">
+                                                        </div>
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label" for="roleCre">Chức vụ</label>
+                                                            <select class="form-control" id="roleCre" name="roleCre">
+                                                                <th:block th:each="item: ${roles}">
+                                                                    <option th:text="${item.code}" th:value="${item.id}">
+
+                                                                    </option>
+                                                                </th:block>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 " >
+                                                            <label class="control-label" for="usernameCre">Username</label>
+                                                            <input type="text" class="form-control" id="usernameCre" name="usernameCre">
+                                                        </div>
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label" for="passwordCre">Password</label>
+                                                            <input type="password" class="form-control" id="passwordCre" name="passwordCre">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label">Tỉnh/ Thành Phố TW</label>
+                                                            <select class="form-control" id="provinceCre" name="provinceCre"></select>
+                                                        </div>
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label">Quận/ Huyện/ Thành Phố</label>
+                                                            <select class="form-control" id="districtCre" name="districtCre"></select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label">Phường/ Thị trấn/ Xã</label>
+                                                            <select class="form-control" id="wardCre" name="wardCre"></select>
+                                                        </div>
+                                                        <div class="col-md-6" >
+                                                            <label class="control-label" for="addressCre">Địa chỉ</label>
+                                                            <input type="text" class="form-control" id="addressCre" name="addressCre">
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-4 form-group upload-image">
+                                                    <div>
+                                                        <section>
+                                                            <div class="wrapper-images">
+                                                                <div class="image-preview">
+                                                                    <canvas id="canvasCre"></canvas>
+                                                                </div>
+                                                                <div class="content" style="opacity: 1;">
+                                                                    <div class="icon">
+                                                                        <i class="ion ion-md-cloud-upload"></i>
+                                                                    </div>
+                                                                    <div class="text">
+                                                                        Chưa có tệp nào được chọn!
+                                                                    </div>
+                                                                    <div class="text">
+                                                                        Dung lượng tối đa = 2MB
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear-image-preview">
+                                                                    <i class="fas fa-times"></i>
+                                                                </div>
+                                                                <div class="file-name">
+                                                                    Sửa ảnh
+                                                                </div>
+                                                            </div>
+                                                            <input type="file" id="imageFileCre" accept="image/jpeg, image/png" hidden="">
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <button id="btnCreateStaff" class="btn btn-save" type="button" style="margin-right: 10px">
+                                                <i class="fa-solid fa-square-plus me-2"></i> Thêm
+                                            </button>
+                                            <button class="btn btn-cancel" type="reset" ><i class="fa-solid fa-square-xmark"></i> Nhập lại</button>
+
+                                        </form>
+                                    </div>
+                                    <!----------------------------- END EXACTLY HERE ---------------------------------->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+
+    <script>
+        const page = {
+            urls: {
+                getAllProvinces: AppBase.API_PROVINCE ,
+                getAllDistricts: AppBase.API_DISTRICT ,
+                getAllWards: AppBase.API_WARD,
+                createStaff: AppBase.API_STAFF ,
+
+            },
+            elements: {},
+            loadData: {},
+            commands: {},
+            dialogs: {
+                elements: {},
+                loadData: {},
+                commands: {},
+            }
+        }
+        let staff = new Staff();
+
+        page.elements.btnShowCreateModal = $('#btnShowCreateModal');
+        page.dialogs.elements.btnCreateStaff = $('#btnCreateStaff');
+        page.dialogs.elements.modalCreateStaff = $('#modalCreateStaff');
+        page.dialogs.elements.formCreateStaff = $('#frmCreateStaff');
+        page.dialogs.elements.provinceCre = $('#provinceCre');
+        page.dialogs.elements.districtCre = $('#districtCre');
+        page.dialogs.elements.wardCre = $('#wardCre');
+        page.dialogs.elements.fullNameCre = $('#fullNameCre');
+        page.dialogs.elements.dobCre = $('#dobCre');
+        page.dialogs.elements.roleCre = $('#roleCre');
+        page.dialogs.elements.phoneCre = $('#phoneCre');
+        page.dialogs.elements.usernameCre = $('#usernameCre');
+        page.dialogs.elements.passwordCre = $('#passwordCre');
+        page.dialogs.elements.addressCre = $('#addressCre');
+
+        page.dialogs.elements.wrapper = $("section .wrapper-images");
+        page.dialogs.elements.wrapperContent = $("section .wrapper-images .content");
+        page.dialogs.elements.imagePreview = $("section .image-preview");
+        page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
+
+        page.dialogs.elements.imageFileCre = $("#imageFileCre");
+        page.dialogs.elements.imagePreviewCanvas = $("section .image-preview canvas");
+        page.dialogs.elements.canvas = $("#canvasCre");
+        page.dialogs.elements.context = page.dialogs.elements.canvas[0].getContext('2d');
+        page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+        page.dialogs.elements.divImagePreview = $("#frmCreateStaff div.image-preview");
+        page.dialogs.elements.divFileName = $("#frmCreateStaff div.file-name");
+
+        page.elements.loader = $(".bg-loading");
+
+        page.dialogs.commands.doCreate = () => {
+
+            page.commands.showLoading();
+            let fullName = page.dialogs.elements.fullNameCre.val().trim();
+            let dob = page.dialogs.elements.dobCre.val().trim();
+            let phone = page.dialogs.elements.phoneCre.val().trim();
+            let provinceId = +page.dialogs.elements.provinceCre.val();
+            let provinceName = page.dialogs.elements.provinceCre.find("option:selected").text();
+            let districtId = +page.dialogs.elements.districtCre.val();
+            let districtName = page.dialogs.elements.districtCre.find("option:selected").text();
+            let wardId = +page.dialogs.elements.wardCre.val();
+            let wardName = page.dialogs.elements.wardCre.find("option:selected").text();
+            let address = page.dialogs.elements.addressCre.val().trim();
+            let username = page.dialogs.elements.usernameCre.val().trim();
+            let password = page.dialogs.elements.passwordCre.val().trim();
+            let roleId = +page.dialogs.elements.roleCre.val().trim();
+            let file = page.dialogs.elements.imageFileCre[0].files[0];
+            if(file == undefined){
+                file = null
+            }
+
+            let formData = new FormData();
+            formData.append("fullName", fullName);
+            formData.append("dob", dob);
+            formData.append("phone", phone);
+            formData.append("provinceId", provinceId);
+            formData.append("provinceName", provinceName);
+            formData.append("districtId", districtId);
+            formData.append("districtName", districtName);
+            formData.append("wardId", wardId);
+            formData.append("wardName", wardName);
+            formData.append("address", address);
+            formData.append("username", username);
+            formData.append("password", password);
+            formData.append("roleId", roleId);
+            formData.append("file", file);
+            console.log(file)
+
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.createStaff,
+                data: formData
+            })
+                .done((data) => {
+                    console.log(data)
+                    let staff = data;
+                    page.dialogs.elements.formCreateStaff[0].reset();
+
+                    page.dialogs.commands.clearImagePreview();
+
+                    toastSuccess("Thêm mới nhân viên <b>" + staff.fullName+ "</b> thành công.");
+
+                })
+                .fail((jqXHR) => {
+
+                    let str = '';
+
+                    if (jqXHR.status === 401) {
+                        AppBase.SweetAlert.showError401();
+                    } else {
+                        if (jqXHR.status === 403) {
+                            AppBase.SweetAlert.showError403();
+                        } else {
+                            if (jqXHR.responseJSON) {
+                                if (jqXHR.responseJSON.message) {
+                                    str += `<label id="message-error" class="error" for="message">${jqXHR.responseJSON.message}</label>`;
+                                } else {
+                                    $.each(jqXHR.responseJSON, function (key, value) {
+                                        str += `<label id="${key}-error" class="error" for="${key}">${value}</label>`;
+                                        $("#" + key).addClass("error");
+                                    });
+                                }
+                                page.dialogs.elements.formCreateStaff.removeClass("hide").addClass("show");
+                                page.dialogs.elements.formCreateStaff.css("display", "block")
+                                page.dialogs.elements.formCreateStaff.append(str);
+                            } else {
+                                AppBase.SweetAlert.showError500();
+                            }
+                        }
+                    }
+                }).always(function () {
+                page.commands.closeLoading();
+            })
+        }
+
+        page.dialogs.elements.formCreateStaff.validate({
+            rules: {
+                fullNameCre: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 30
+                },
+                dobCre: {
+                    required: true,
+                },
+                phoneCre: {
+                    minlength: 10,
+                    required: true,
+                },
+                provinceCre: {
+                    required: true,
+                    min: 1,
+                    max: 100000,
+                    number: true
+                },
+                districtCre: {
+                    required: true,
+                    min: 1,
+                    max: 100000,
+                    number: true
+                },
+                wardCre: {
+                    required: true,
+                    min: 1,
+                    max: 100000,
+                    number: true
+                },
+                roleCre: {
+                    required: true,
+                    min: 1,
+                    max: 10,
+                    number: true
+                },
+                addressCre: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                },
+                usernameCre: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 50,
+                    email: true
+                },
+                passwordCre: {
+                    required: true,
+                },
+            },
+            messages: {
+                fullNameCre: {
+                    required: "Vui lòng nhập tên nhân viên.",
+                    minlength: "Tên sản phẩm có độ dài tối thiểu là 3 ký tự.",
+                    maxlength: "Tên sản phẩm có độ dài tối đa là 30 ký tự."
+                },
+                provinceCre: {
+                    required: "Vui lòng chọn địa chỉ",
+                    min: "địa chỉ không đúng. vui lòng nhập lại.",
+                    max: "địa chỉ không đúng. vui lòng nhập lại.",
+                    number: "địa chỉ không đúng. vui lòng nhập lại."
+                },
+                districtCre: {
+                    required: "Vui lòng chọn địa chỉ",
+                    min: "địa chỉ không đúng. vui lòng nhập lại.",
+                    max: "địa chỉ không đúng. vui lòng nhập lại.",
+                    number: "địa chỉ không đúng. vui lòng nhập lại."
+                },
+                wardCre: {
+                    required: "Vui lòng chọn địa chỉ",
+                    min: "địa chỉ không đúng. vui lòng nhập lại.",
+                    max: "địa chỉ không đúng. vui lòng nhập lại.",
+                    number: "địa chỉ không đúng. vui lòng nhập lại."
+                },
+                roleCre: {
+                    required: "Vui lòng chọn chức vụ",
+                    min: "chức vụ không đúng. vui lòng nhập lại.",
+                    max: "chức vụ không đúng. vui lòng nhập lại.",
+                    number: "chức vụ không đúng. vui lòng nhập lại."
+                },
+                addressCre: {
+                    required: "Vui lòng nhập địa chỉ.",
+                    minlength: "Địa chỉ có độ dài tối thiểu là ${0} ký tự.",
+                    maxlength: "Địa chỉ có độ dài tối đa là ${0} ký tự."
+                },
+                phoneCre: {
+                    minlength: "Số điện thoại có độ dài tối thiểu là ${0} ký tự.",
+                    required: "Vui lòng nhập số điện thoại."
+                },
+                usernameCre: {
+                    required: "Vui lòng nhập email.",
+                    minlength: "Email có độ dài tối thiểu là ${0} ký tự.",
+                    maxlength: "Email có độ dài tối đa là ${0} ký tự.",
+                    email: "Định dạng email không đúng."
+                },
+                dobCre: {
+                    required: "Vui lòng chọn ngày tháng",
+
+                },
+                passwordCre: {
+                    required: "Vui lòng nhập mật khẩu..."
+                },
+            },
+            submitHandler: function () {
+                page.dialogs.commands.doCreate();
+            }
+        })
+
+        page.dialogs.elements.btnCreateStaff.on('click' , () => {
+            page.dialogs.elements.formCreateStaff.trigger('submit');
+        })
+
+        page.commands.closeLoading = () => {
+            $('.fa-square-plus').removeClass('hide')
+            $('.lds-ring-btn').addClass("hide");
+            $('.lds-ring').addClass("hide");
+            page.elements.loader.addClass("hide");
+            page.dialogs.elements.btnCreateStaff.prop('disabled', false);
+        }
+
+        page.commands.showLoading = () => {
+            $('.fa-square-plus').addClass('hide')
+            $('.lds-ring-btn').removeClass("hide");
+            $('.lds-ring').removeClass("hide");
+            page.elements.loader.removeClass("hide");
+            page.dialogs.elements.btnCreateStaff.prop('disabled', true);
+        }
+
+        page.dialogs.commands.loadImageToCanvas = (imageFile, fileType, imageUrl) => {
+            page.dialogs.elements.imagePreviewCanvas.css("display", "");
+            page.dialogs.elements.wrapper.addClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 0);
+
+            let imageObj = new Image();
+
+            imageObj.onload = function () {
+                page.dialogs.elements.context.canvas.width = imageObj.width;
+                page.dialogs.elements.context.canvas.height = imageObj.height;
+                page.dialogs.elements.context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
+
+            };
+
+            if (fileType === "BINARY") {
+                imageObj.src = URL.createObjectURL(imageFile);
+            } else {
+                imageObj.src = imageUrl;
+            }
+        }
+
+        page.dialogs.commands.changeImagePreview = (elem) => {
+            let imageFile = elem[0].files[0];
+
+            if (imageFile) {
+                let reader = new FileReader();
+
+                reader.readAsDataURL(imageFile);
+
+                reader.onload = function (e) {
+                    if (e.target.readyState === FileReader.DONE) {
+                        page.dialogs.commands.loadImageToCanvas(imageFile, "BINARY", null);
+                    }
+                }
+            } else {
+                page.dialogs.commands.clearImagePreview();
+            }
+        }
+
+        page.dialogs.commands.clearImagePreview = () => {
+            page.dialogs.elements.imageFileCre.val("");
+            page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+            page.dialogs.elements.wrapper.removeClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 1);
+        }
+        page.loadData.getAllProvinces = () => {
+            return $.ajax({
+                type: 'GET',
+                url: page.urls.getAllProvinces
+            })
+                .done((data) => {
+                    let provinces = data.results;
+
+                    $.each(provinces, (i, item) => {
+                        let str = `<option value="${item.province_id}">${item.province_name}</option>`;
+
+                        page.dialogs.elements.provinceCre.append(str);
+                    })
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR)
+                })
+        }
+
+        page.loadData.getAllDistrictsByProvinceId = (provinceId, elem) => {
+            return $.ajax({
+                type: 'GET',
+                url: page.urls.getAllDistricts  + provinceId
+            })
+                .done((data) => {
+                    elem.empty();
+
+                    let districts = data.results;
+
+                    $.each(districts, (i, item) => {
+                        let str = `<option value="${item.district_id}">${item.district_name}</option>`;
+
+                        elem.append(str);
+                    })
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR)
+                })
+        }
+
+        page.loadData.getAllWardsByDistrictId = (districtId, elem) => {
+            return $.ajax({
+                type: 'GET',
+                url: page.urls.getAllWards + districtId
+            })
+                .done((data) => {
+                    elem.empty();
+                    let wards = data.results;
+
+                    $.each(wards, (i, item) => {
+                        let str = `<option value="${item.ward_id}">${item.ward_name}</option>`;
+
+                        elem.append(str);
+                    })
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR)
+                })
+        }
+
+        page.commands.handleChangeProvince = (elemProvince, elemDistrict, elemWard) => {
+            elemProvince.on('change', function () {
+                let provinceId = $(this).val();
+
+                page.loadData.getAllDistrictsByProvinceId(provinceId, elemDistrict).then(() => {
+                    let districtId = elemDistrict.val();
+
+                    page.loadData.getAllWardsByDistrictId(districtId, elemWard);
+                });
+            })
+        }
+
+        page.commands.handleChangeDistrict = (elemDistrict, elemWard) => {
+            elemDistrict.on('change', function () {
+                let districtId = $(this).val();
+
+                page.loadData.getAllWardsByDistrictId(districtId, elemWard);
+            })
+        }
+
+        page.commands.loadData = () => {
+            page.loadData.getAllProvinces().then(() => {
+                let provinceId = page.dialogs.elements.provinceCre.val();
+
+                page.loadData.getAllDistrictsByProvinceId(provinceId, page.dialogs.elements.districtCre).then(() => {
+                    let districtId = page.dialogs.elements.districtCre.val();
+
+                    page.loadData.getAllWardsByDistrictId(districtId, page.dialogs.elements.wardCre);
+                });
+            });
+
+        }
+
+        page.initializeControlEvent = () => {
+
+            page.dialogs.elements.divImagePreview.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+            page.dialogs.elements.divFileName.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+
+            page.dialogs.elements.imageFileCre.on("change", function () {
+                page.dialogs.commands.changeImagePreview(page.dialogs.elements.imageFileCre);
+            });
+
+            page.dialogs.elements.btnClearImagePreview.on('click', () => {
+                page.dialogs.commands.clearImagePreview();
+            })
+
+            page.dialogs.elements.btnCreateStaff.on('click', function () {
+                page.dialogs.commands.doCreate();
+            });
+
+
+            page.commands.handleChangeProvince(page.dialogs.elements.provinceCre, page.dialogs.elements.districtCre, page.dialogs.elements.wardCre);
+
+            page.commands.handleChangeDistrict(page.dialogs.elements.districtCre, page.dialogs.elements.wardCre);
+
+
+        }
+
+        $(() => {
+            page.commands.loadData();
+
+            page.initializeControlEvent();
+        })
+
+    </script>
+
+</body>
+
+</html>

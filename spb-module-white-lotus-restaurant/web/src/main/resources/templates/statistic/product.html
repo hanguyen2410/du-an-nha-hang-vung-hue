@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AdminSite - SCSS</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<th:block th:replace="layout/sidebar"/>
+<!-- SIDEBAR -->
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <th:block th:replace="layout/navbar"/>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <!------  Tittle ----->
+        <h1>Statistic Product</h1>
+        <div class="cards">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <!-------------------------------- EXACTLY HERE ----------------------------------->
+                            <h3>Sales reports</h3>
+                            <div class="chart">
+                                <div id="chart">
+                                </div>
+                            </div>
+                            <!----------------------------- END EXACTLY HERE ---------------------------------->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+
+
+<!---- JAVA SCRIPT ---->
+<th:block th:replace="layout/javascript"/>
+
+</script>
+
+</body>
+
+</html>

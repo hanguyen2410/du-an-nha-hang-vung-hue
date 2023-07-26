@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Danh sách sản phẩm</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="staff-template/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <!------  Main header ----->
+            <div class="app-title">
+                <div class="app-title-child">
+                    <h3>Danh sách sản phẩm</h3>
+                </div>
+                <div id="clock"></div>
+            </div>
+            <!---- End Main header --->
+            <div class="cards d-flex flex-column">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <div class="row element-button">
+                                    <div class="col-lg-3">
+                                    </div>
+                                    <div class="col-lg-2"></div>
+                                    <div class="col-lg-7">
+                                        <form action="#" class="form-group d-flex float-right" >
+                                            <div class="mr-2">
+                                                <input type="text" id="keyWord" class="form-control" placeholder="Tìm kiếm...">
+                                            </div>
+                                            <div class="mr-2">
+                                                <select class="form-control select2-container" id="categoryFilter">
+                                                    <option value="-1" selected>--Danh mục--</option>
+                                                    <th:block th:each="item: ${categories}">
+                                                        <option th:text="${item.title}" th:value="${item.id}">
+
+                                                        </option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-outline-info" id="btnSearch">
+                                                    <i class="fa fa-search"></i>
+                                                    Tìm kiếm
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <table id="tbProduct" class="table table-hover table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th width="10"><input type="checkbox" id="all"></th>
+                                            <th>Id</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Ảnh</th>
+                                            <th>Giá</th>
+                                            <th>Loại</th>
+                                            <th>Đơn vị</th>
+                                            <th>Mô tả</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row" id="body-foot">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+
+    <script>
+
+        const page = {
+            urls: {
+                getAllProducts: AppBase.API_PRODUCT + '/get-all',
+                findProductById: AppBase.API_PRODUCT
+            },
+            elements: {},
+            loadData: {},
+            commands: {},
+            dialogs: {
+                elements: {},
+                loadData: {},
+                commands: {},
+            }
+        }
+
+        let currentProductId;
+        let currentPageNumber = 0;
+
+        let product = new Product();
+        let productAvatar = new ProductAvatar();
+        let unit = new Unit();
+
+        page.dialogs.elements.keyWord = $('#keyWord');
+        page.dialogs.elements.categoryFilter = $('#categoryFilter');
+
+
+        page.dialogs.elements.btnSearch = $('#btnSearch');
+
+
+
+        page.dialogs.elements.wrapper = $("section .wrapper-images");
+        page.dialogs.elements.wrapperContent = $("section .wrapper-images .content");
+        page.dialogs.elements.imagePreview = $("section .image-preview");
+        page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
+
+
+        page.elements.loader = $(".bg-loading");
+
+        page.loadData.findProductById = (id) => {
+            return $.ajax({
+                type: 'GET',
+                url: page.urls.findProductById + '/' + id
+            })
+                .done((data) => {
+
+                })
+                .fail(() => {
+                    ;
+                })
+        }
+
+        page.dialogs.commands.getAllProducts = () => {
+
+            page.commands.showLoading();
+
+            let currentKeyWord = page.dialogs.elements.keyWord.val();
+            let currentCategoryFilter = +page.dialogs.elements.categoryFilter.val().trim() ;
+
+            console.log('...check currentPageNumber ', currentPageNumber)
+
+            let obj = {
+                currentPageNumber: currentPageNumber,
+                keyWord: currentKeyWord,
+                categoryFilter: currentCategoryFilter
+            }
+
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                url: page.urls.getAllProducts,
+                data: JSON.stringify(obj),
+            })
+                .done((data) => {
+
+                    $('#tbProduct tbody tr').remove();
+
+                    console.log(data)
+
+                    listProduct = data.content;
+
+                    currentPageNumber = data.pageable.pageNumber;
+
+                    totalElements = data.totalElements;
+
+                    totalPages = data.totalPages;
+
+                    $.each(listProduct, (i, item) => {
+                        product = item;
+
+                        productAvatar = item.productAvatar;
+
+                        let str = page.commands.renderProduct(product, productAvatar);
+                        $('#tbProduct tbody').append(str);
+                    })
+
+                    let strPage = page.commands.renderPagination(currentPageNumber, totalElements, totalPages );
+                    $('#body-foot').empty().append(strPage);
+
+                    page.commands.addEventClick();
+                    
+                })
+                .fail(() => {
+                    toastFail("Result Fail");
+                })
+                .always(function () {
+                page.commands.closeLoading();
+                })
+        }
+
+        page.commands.addEventClick = () => {
+            page.commands.addEventChangePage();
+        }
+
+
+        page.commands.addEventChangePage = () => {
+            $('.page-link').on('click', function () {
+
+                let pageNumber = $(this).data('page');
+
+                currentPageNumber = pageNumber;
+
+                page.dialogs.commands.getAllProducts();
+            })
+        }
+
+        page.dialogs.elements.btnSearch.on('click' , () => {
+            page.dialogs.commands.getAllProducts();
+        })
+
+        page.commands.renderPagination = (currentPageNumber, totalElements, totalPages) => {
+            let str = `
+                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                    [ 1 -- 10 ] của [ ${totalElements} ] sản phẩm
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                    <ul class="pagination">
+                `;
+
+
+            if (currentPageNumber != 0) {
+                str += `
+                            <li class="paginate_button page-item previous" id="sampleTable_previous">
+                                <a class="page-link" data-page="${currentPageNumber-1}" >Lùi</a>
+                            </li>
+                            `;
+            } else {
+                str += `
+                            <li class="paginate_button page-item previous disabled" id="sampleTable_previous">
+                                <a class="page-link">Lùi</a>
+                            </li>
+                            `;
+            }
+
+            for(let i = 1; i <= totalPages ; i++ ) {
+                if ((i - 1 ) === currentPageNumber) {
+                    str += `
+                            <li class="paginate_button page-item active">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+                }
+                else {
+                    str += `
+                            <li class="paginate_button page-item">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+                }
+            }
+
+            if(currentPageNumber != (totalPages - 1)){
+                str += `
+                            <li class="paginate_button page-item next" id="sampleTable_next">
+                                <a class="page-link" data-page="${currentPageNumber+1}">Tiếp</a>
+                            </li>
+                        `;
+            } else {
+                str += `
+                            <li class="paginate_button page-item next disabled" id="sampleTable_next">
+                                <a class="page-link">Tiếp</a>
+                            </li>
+                        `;
+            }
+
+            return str;
+        }
+
+        page.commands.renderProduct = (product, productAvatar) => {
+            let image_thumbnail = `
+                        ${AppBase.API_CLOUDINARY}/${AppBase.SCALE_IMAGE_W_90_H_90_Q_100}/${productAvatar.fileFolder}/${productAvatar.fileName}
+                    `;
+            return `
+                            <tr id="tr_${product.id}" class="hover" style="font-weight: 600;">
+                                            <td width="10"><input type="checkbox" name="check_${product.id}" value="${product.id}"></td>-->
+                                            <td>${product.id}</td>
+                                            <td>${product.title}</td>
+                                            <td style="width: 110px"><img src="${image_thumbnail}" alt="" class="img-product"></td>
+                                            <td>${product.price}</td>
+                                            <td><span class="badge bg-success">${product.category.title}</span></td>
+                                            <td>${product.unit.title}</td>
+                                            <td>${product.description}</td>
+                            </tr>
+                        `;
+        }
+
+        page.commands.closeLoading = () => {
+            $('.lds-ring').addClass("hide");
+            page.elements.loader.addClass("hide");
+        }
+        page.commands.showLoading = () => {
+            $('.lds-ring').removeClass("hide");
+            page.elements.loader.removeClass("hide");
+        }
+
+        page.commands.loadData = () => {
+            page.dialogs.commands.getAllProducts();
+        }
+
+        page.initializeControlEvent = () => {
+        }
+
+        $(() => {
+            page.commands.loadData();
+
+            page.initializeControlEvent();
+        })
+
+    </script>
+
+</body>
+
+</html>

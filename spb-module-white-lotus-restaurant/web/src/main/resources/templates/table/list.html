@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>White Lotus | Tables</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+<body>
+
+<!------------- LOADING SPINNER---------->
+<th:block th:replace="layout/loading"/>
+<!------------- LOADING SPINNER---------->
+
+
+<!-- SIDEBAR -->
+<th:block th:replace="layout/sidebar"/>
+<!-- SIDEBAR -->
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <th:block th:replace="layout/navbar"/>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <!------  Main header ----->
+        <div class="app-title">
+            <div class="app-title-child">
+                <h3>Danh sách bàn</h3>
+            </div>
+            <div id="clock"></div>
+        </div>
+        <!---- End Main header --->
+        <div class="cards">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <div class="row d-flex flex-row justify-content-center" style="width: 100%; padding: 0; margin: 0">
+                                <div class="row d-flex flex-row " id="card-div" style="width: 100%; padding: 0; margin: 0">
+                                    <div id="create-div" class="col-2 card me-2 card-empty d-flex align-items-center"
+                                         style="padding: 0; height: auto">
+                                            <h2 class="my-auto">
+                                                <i class="fa-solid fa-plus" style="font-size: 50px"></i>
+                                            </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- MAIN -->
+</section>
+
+<!-- --------------------------------------Modal Create------------------------------------- -->
+<div class="cover-modal">
+    <div id="modalCreateTable" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Table</h5>
+                    <i class="fa-solid fa-xmark btn-close" data-bs-dismiss="modal" aria-label="Close"></i>
+                </div>
+                <form id="formCreateTable" method="post">
+                    <div class="modal-body">
+                        <div class="modal-alert-danger hide"></div>
+
+                        <div class="row">
+                            <div class="form-group  col-md-12">
+                                <label class="control-label" for="nameTableCre">Name Table</label>
+                                <input class="form-control" type="text" placeholder="Enter Table Name"
+                                       id="nameTableCre" name="nameTableCre">
+                            </div>
+                            <div class="loader hide">
+                                <div id="loading"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-save" type="button" id="btnCreate">
+                            <i class="fa-solid fa-square-plus"></i> Create
+                        </button>
+                        <button class="btn btn-cancel" type="button" data-bs-dismiss="modal"><i
+                                class="fa-solid fa-square-xmark"></i> Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------------------End Modal Create----------------------------------- -->
+<!-- CONTENT -->
+
+
+<!---- JAVA SCRIPT ---->
+<th:block th:replace="layout/javascript"/>
+<script>
+    let currentId;
+    let currentPage = 1;
+    const page = {
+        urls: {
+            getAllTables: AppBase.API_TABLE,
+            getTableById: AppBase.API_TABLE,
+            deleteTable: AppBase.API_TABLE,
+            createTable: AppBase.API_TABLE + "/create"
+        },
+        elements: {},
+        loadData: {},
+        commands: {},
+        dialogs: {
+            elements: {},
+            loadData: {},
+            commands: {},
+        }
+    }
+
+    page.dialogs.elements.modalCreateTable = $('#modalCreateTable');
+
+    page.dialogs.elements.btnShowModalCreate = $('#btnShowModalCreate');
+
+    page.dialogs.elements.formCreateTable = $('#formCreateTable');
+
+    page.dialogs.elements.modalCreateTable = $('#modalCreateTable');
+
+    page.dialogs.elements.nameTable = $("#nameTableCre");
+
+    page.dialogs.elements.btnCreate = $("#btnCreate");
+
+    page.dialogs.elements.divCreate = $("#create-div");
+
+    page.elements.loader = $(".bg-loading");
+
+    page.loadData.getAllTables = () => {
+        $.ajax({
+            type: "GET",
+            headers: {
+                'accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            url: page.urls.getAllTables
+        })
+            .done(data => {
+                if (data) {
+                    let listTable = data;
+                    $.each(listTable, (i, item) => {
+                        let str = page.commands.renderTableDTO(item);
+                        $("#card-div").append(str);
+                        page.commands.styleCard(item);
+                    })
+                }
+            })
+    }
+
+    page.loadData.findTableById = (id) => {
+        return $.ajax({
+            type: "GET",
+            url: page.urls.getTableById + "/" + id,
+        })
+            .done((data) => {
+            })
+            .fail((jqXHR) => {
+                let errors = jqXHR.responseJSON;
+                if (errors) {
+                    let str = "";
+                    $.each(errors, (k, v) => {
+                        str += `${v}`
+                    })
+                    toastFail(str);
+                }
+            })
+    }
+
+    page.commands.doCreate = () => {
+
+        page.commands.showLoading();
+
+        let name = page.dialogs.elements.nameTable.val();
+
+        let obj = {
+            name: name
+        }
+
+        $.ajax({
+            type: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            url: page.urls.createTable,
+            data: JSON.stringify(obj),
+        })
+            .done((data) => {
+                let tableDTO = data;
+                let str = page.commands.renderTableDTO(tableDTO);
+
+                $("#card-div").append(str);
+
+                page.dialogs.elements.formCreateTable[0].reset();
+                toastSuccess("Thêm mới bàn <b>" + tableDTO.name + "</b> thành công.");
+
+
+                page.dialogs.elements.modalCreateTable.modal('hide');
+
+            })
+            .fail((jqXHR) => {
+                if (jqXHR.status === 404) {
+                    AppBase.errorAlert("Not found this category");
+                } else {
+                    let errors = jqXHR.responseJSON;
+                    let str = '';
+                    $.each(errors, (k, v) => {
+                        str += `<li for="${k}Cre">${v}</li>`;
+                        $("#" + k + "Cre").addClass("error");
+                    })
+                    $('#createModal .modal-alert-danger').append(str);
+                    $('#createModal .modal-alert-danger').removeClass('hide').addClass('show');
+                }
+            }).always(function () {
+            page.commands.closeLoading();
+        })
+    }
+
+
+    page.dialogs.elements.formCreateTable.validate({
+        rules: {
+            nameTableCre: {
+                required: true,
+                minlength: 4,
+                maxlength: 20
+            }
+        },
+        messages: {
+            nameTableCre: {
+                required: "Vui lòng nhập tên bàn.",
+                minlength: "Tên sản phẩm có độ dài tối thiểu là ${0} ký tự.",
+                maxlength: "Tên sản phẩm có độ dài tối đa là ${0} ký tự."
+            }
+        }, submitHandler: function () {
+            page.commands.doCreate();
+        }
+    })
+
+    page.commands.addEventClick = () => {
+        page.commands.addEventDeleteClick();
+    }
+
+    page.commands.addEventDeleteClick = () => {
+        $("#card-div").on("click", '.delete', function () {
+            let id = $(this).data('id');
+
+            page.loadData.findTableById(id).then((data) => {
+                currentId = data.id;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to remove table " + " ' " + data.name + " ' " + " from list?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            headers: {
+                                'accept': 'application/json',
+                                'content-type': 'application/json'
+                            },
+                            type: "DELETE",
+                            url: page.urls.deleteTable + "/" + currentId
+                        })
+                            .done((data) => {
+                                $("#card_" + currentId).remove();
+                            })
+                            .fail((error) => {
+                                toastFail(error);
+                            })
+                        Swal.fire(
+                            'Deleted!',
+                            'This product has been deleted.',
+                            'success'
+                        )
+                    }
+                })
+            })
+        })
+    }
+
+    page.commands.styleCard = (table) => {
+        if (table.statusValue !== 'EMPTY') {
+            $("#card_" + table.id).removeClass('card-empty');
+            $("#card_" + table.id).addClass('card-not-empty');
+        }
+    }
+
+    page.commands.renderTableDTO = (table) => {
+        return `
+                <div id="card_${table.id}" class="col-2 card text-lg-center me-2 card-empty delete" data-id="${table.id}"
+                     style="padding: 0">
+                    <div class="card-body">
+                        <h3>
+                            <i class="fa-solid fa-utensils"></i>
+                        </h3>
+                        <h5 class="card-title">${table.name}</h5>
+                        <p class="card-text">${table.statusValue}</p>
+                    </div>
+                </div>`
+        // return `
+        //         <tr id="tr_${table.id}">
+        //             <td width="10"><input type="checkbox" id="td_${table.id}"></td>
+        //             <td>${table.id}</td>
+        //             <td>${table.name}</td>
+        //             <td>${table.statusValue}</td>
+        //             <td class="align-items-center">
+        //                 <div class="iq-card-header-toolbar d-flex align-items-center">
+        //                     <div class="dropdown">
+        //                             <span class="dropdown-toggle text-primary" id="dropdownMenuButton5" data-toggle="dropdown" >
+        //                              <i class="fa-solid fa-table"></i>
+        //                         </span>
+        //                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+        //                                 <button class="btn btn-primary dropdown-item delete" data-id="${table.id}" type="button" title="Xóa">
+        //                                         <i class="fas fa-trash-alt"></i>
+        //                                 </button>
+        //                                 <button data-id="${table.id}" class="btn btn-primary dropdown-item edit" type="button" title="Sửa" data-toggle="modal" data-target="#ModalUP">
+        //                                         <i class="fas fa-edit"></i>
+        //                                 </button>
+        //                             </div>
+        //                     </div>
+        //                 </div>
+        //             </td>
+        //         </tr>
+        //     `;
+    }
+
+    page.commands.closeLoading = () => {
+        $('.lds-ring').addClass("hide");
+        page.elements.loader.addClass("hide");
+        page.dialogs.elements.btnCreate.prop('disabled', false);
+    }
+    page.commands.showLoading = () => {
+        $('.lds-ring').removeClass("hide");
+        page.elements.loader.removeClass("hide");
+        page.dialogs.elements.btnCreate.prop('disabled', true);
+    }
+
+    page.commands.loadData = () => {
+        page.loadData.getAllTables(currentPage);
+    }
+
+    page.initializeControlEvent = () => {
+        page.commands.addEventClick();
+
+        page.dialogs.elements.btnCreate.on("click", () => {
+            page.dialogs.elements.formCreateTable.trigger("submit");
+        })
+
+        page.dialogs.elements.divCreate.on('click', () => {
+            page.dialogs.elements.modalCreateTable.modal('show');
+        })
+    }
+
+    $(() => {
+        page.commands.loadData();
+
+        page.initializeControlEvent();
+    })
+</script>
+</body>
+</html>

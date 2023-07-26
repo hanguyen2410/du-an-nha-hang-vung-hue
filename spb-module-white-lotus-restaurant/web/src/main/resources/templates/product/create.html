@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Thêm mới sản phẩm</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="layout/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <!------  Main header ----->
+            <div class="app-title">
+<!--                <div class="col-lg-9">-->
+                    <div class="app-title-child">
+                        <h3>Thêm mới sản phẩm</h3>
+                    </div>
+<!--                </div>-->
+                <div class="col-lg-3 div-ds-sanpham">
+                    <a href="/products" class="btn btn-delete print-file ds-sanpham" title="Danh sách sản phẩm">
+                        <i class="fa-solid fa-list"></i>
+                        Danh sách sản phẩm
+                    </a>
+                </div>
+            </div>
+            <!---- End Main header --->
+            <div class="cards">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <div class="row">
+                                    <!-------------------------------- EXACTLY HERE ----------------------------------->
+                                    <div style="width: 100% !important;">
+                                        <form id="formCreateProduct" enctype="multipart/form-data" style="display: flex">
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="form-group col-md-8">
+                                                        <label class="control-label" for="titleCre">Tên</label>
+                                                        <input class="form-control" type="text" placeholder="Nhập tên" id="titleCre" name="titleCre">
+                                                    </div>
+                                                    <div class="form-check form-switch col-md-4">
+                                                        <label class="control-label col-12" >Món nấu</label>
+                                                        <div class="ml-3" id="cookingCre">
+                                                            <div class="form-check form-check">
+                                                                <input class="form-check-input" type="radio" name="cookingCre" id="inlineRadio1" value="false">
+                                                                <label class="form-check-label" for="inlineRadio1">Phục vụ sẳn</label>
+                                                            </div>
+                                                            <div class="form-check form-check">
+                                                                <input class="form-check-input" type="radio" name="cookingCre" id="inlineRadio2" value="true" checked>
+                                                                <label class="form-check-label" for="inlineRadio2">Nhập bếp</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label" for="priceCre">Giá</label>
+                                                        <input class="form-control" type="text" placeholder="Nhập giá" id="priceCre" name="priceCre">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label" for="categoryCre">Phân loại</label>
+                                                        <select class="form-control" id="categoryCre" name="categoryCre">
+                                                            <option value="-1" selected>--Loại--</option>
+                                                            <th:block th:each="item: ${categories}">
+                                                                <option th:text="${item.title}" th:value="${item.id}">
+
+                                                                </option>
+                                                            </th:block>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label" for="unitCre">Đơn vị</label>
+                                                        <select class="form-control" id="unitCre" name="unitCre">
+                                                            <option value="-1" selected>-Đơn vị--</option>
+                                                            <th:block th:each="item: ${units}">
+                                                                <option th:text="${item.title}" th:value="${item.id}">
+
+                                                                </option>
+                                                            </th:block>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group  col-md-12">
+                                                        <label class="control-label" for="descriptionCre">Mô tả</label>
+                                                        <textarea id="descriptionCre" class="form-control" rows="4" placeholder="Description" name="descriptionCre"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group upload-image">
+                                                <div>
+                                                    <section>
+                                                        <div class="wrapper-images">
+                                                            <div class="image-preview">
+                                                                <canvas id="canvasCre"></canvas>
+                                                            </div>
+                                                            <div class="content" style="opacity: 1;">
+                                                                <div class="icon">
+                                                                    <i class="ion ion-md-cloud-upload"></i>
+                                                                </div>
+                                                                <div class="text">
+                                                                    Chưa có tệp nào được chọn!
+                                                                </div>
+                                                                <div class="text">
+                                                                    Dung lượng tối đa = 2MB
+                                                                </div>
+                                                            </div>
+                                                            <div class="clear-image-preview">
+                                                                <i class="fas fa-times"></i>
+                                                            </div>
+                                                            <div class="file-name">
+                                                                Sửa ảnh
+                                                            </div>
+                                                        </div>
+                                                        <input type="file" id="imageFileCre" accept="image/jpeg, image/png" hidden="">
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!----------------------------- END EXACTLY HERE ---------------------------------->
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnCreateProduct" class="btn btn-save" type="button" style="margin-right: 10px">
+                            <i class="fa-solid fa-square-plus me-2"></i> Thêm
+                        </button>
+                        <button class="btn btn-cancel" type="button" data-bs-dismiss="modal"><i class="fa-solid fa-square-xmark"></i> Huỷ</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+
+    <script>
+        const page = {
+            urls: {
+                createProduct: AppBase.API_PRODUCT + '/create',
+            },
+            elements: {},
+            loadData: {},
+            commands: {},
+            dialogs: {
+                elements: {},
+                loadData: {},
+                commands: {},
+            }
+        }
+
+        let product = new Product();
+        let productAvatar = new ProductAvatar();
+        let unit = new Unit();
+        let isCook = $('input[name="cookingCre"]:checked').val();
+
+
+        page.dialogs.elements.titleCre = $('#titleCre');
+        page.dialogs.elements.priceCre = $('#priceCre');
+        page.dialogs.elements.unitCre = $('#unitCre');
+        page.dialogs.elements.categoryCre = $('#categoryCre');
+        page.dialogs.elements.descriptionCre = $('#descriptionCre');
+
+        page.dialogs.elements.btnShowModalCreate = $('#btnShowModalCreate');
+        page.dialogs.elements.btnCreate = $('#btnCreateProduct');
+
+        page.dialogs.elements.formCreateProduct = $('#formCreateProduct');
+
+        page.dialogs.elements.wrapper = $("section .wrapper-images");
+        page.dialogs.elements.wrapperContent = $("section .wrapper-images .content");
+        page.dialogs.elements.imagePreview = $("section .image-preview");
+        page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
+
+        page.dialogs.elements.imageFileCre = $("#imageFileCre");
+        page.dialogs.elements.imagePreviewCanvas = $("section .image-preview canvas");
+        page.dialogs.elements.canvas = $("#canvasCre");
+        page.dialogs.elements.context = page.dialogs.elements.canvas[0].getContext('2d');
+        page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+        page.dialogs.elements.divImagePreview = $("#formCreateProduct div.image-preview");
+        page.dialogs.elements.divFileName = $("#formCreateProduct div.file-name");
+
+        page.elements.loader = $(".bg-loading");
+
+        page.dialogs.commands.doCreate = () => {
+
+            page.commands.showLoading();
+
+            let title = page.dialogs.elements.titleCre.val().trim();
+            let price = page.dialogs.elements.priceCre.val().trim();
+            let unit_id = +page.dialogs.elements.unitCre.val().trim();
+            let unit_title = page.dialogs.elements.unitCre.find("option:selected").text();
+            let category_id = +page.dialogs.elements.categoryCre.val().trim();
+            let category_title = page.dialogs.elements.categoryCre.find("option:selected").text();
+            let description = page.dialogs.elements.descriptionCre.val().trim();
+            let file = page.dialogs.elements.imageFileCre[0].files[0];
+            let cooking = isCook;
+
+            let formData = new FormData();
+            formData.append("title", title);
+            formData.append("price", price);
+            formData.append("unitId", unit_id);
+            formData.append("categoryId", category_id);
+            formData.append("description", description);
+            formData.append("file", file);
+            formData.append("cooking", cooking);
+
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.createProduct,
+                data: formData
+            })
+                .done((data) => {
+                    let product = data;
+                    page.dialogs.elements.formCreateProduct[0].reset();
+
+                    page.dialogs.commands.clearImagePreview();
+
+                    toastSuccess("Thêm mới sản phẩm <b>" + product.title+ "</b> thành công.");
+
+                })
+                .fail((jqXHR) => {
+
+                    let str = '';
+
+                    if (jqXHR.status === 401) {
+                        AppBase.SweetAlert.showError401();
+                    } else {
+                        if (jqXHR.status === 403) {
+                            AppBase.SweetAlert.showError403();
+                        } else {
+                            if (jqXHR.responseJSON) {
+                                if (jqXHR.responseJSON.message) {
+                                    str += `<label id="message-error" class="error" for="message">${jqXHR.responseJSON.message}</label>`;
+                                } else {
+                                    $.each(jqXHR.responseJSON, function (key, value) {
+                                        str += `<label id="${key}-error" class="error" for="${key}">${value}</label>`;
+                                        $("#" + key).addClass("error");
+                                    });
+                                }
+                                page.dialogs.elements.formCreateProduct.removeClass("hide").addClass("show");
+                                page.dialogs.elements.formCreateProduct.css("display", "block")
+                                page.dialogs.elements.formCreateProduct.append(str);
+                            } else {
+                                AppBase.SweetAlert.showError500();
+                            }
+                        }
+                    }
+                }).always(function () {
+                page.commands.closeLoading();
+            })
+        }
+
+        // function valueOfCooking () {
+        //     let check = document.getElementsByName("cookingCre");
+        //     for (let i = 0; i < check.length ; i++){
+        //         if (check[i].checked === true){
+        //             return check[i].value ;
+        //         }
+        //     }
+        // }
+
+
+        page.dialogs.elements.formCreateProduct.validate({
+            rules: {
+                titleCre: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                },
+                priceCre: {
+                    required: true,
+                    min: 100,
+                    max: 999999999,
+                    number: true
+                },
+                unitCre: {
+                    required: true,
+                    min: 1,
+                    max: 9,
+                    number: true
+                },
+                categoryCre: {
+                    required: true,
+                    min: 1,
+                    max: 5,
+                    number: true
+                },
+                descriptionCre: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 300
+                }
+            },
+            messages: {
+                titleCre: {
+                    required: "Vui lòng nhập tên sản phẩm.",
+                    minlength: "Tên sản phẩm có độ dài tối thiểu là 5 ký tự.",
+                    maxlength: "Tên sản phẩm có độ dài tối đa là 100 ký tự."
+                },
+                priceCre: {
+                    required: "Vui lòng nhập giá.",
+                    min: "Giá sản phẩm tối thiểu là 100.000 VNĐ.",
+                    max: "Giá sản phẩm tối đa là 999.999.999 VNĐ.",
+                    number: "Giá sản phẩm phải là số."
+                },
+                unitCre: {
+                    required: "Vui lòng nhập loại sản phẩm.",
+                    min: "Loại sản phẩm không đúng. vui lòng nhập lại.",
+                    max: "Loại sản phẩm không đúng. vui lòng nhập lại.",
+                    number: "Loại sản phẩm không đúng. vui lòng nhập lại."
+                },
+                categoryCre: {
+                    required: "Vui lòng nhập loại sản phâ.",
+                    min: "mã sản phẩm không đúng. vui lòng nhập lại.",
+                    max: "mã sản phẩm không đúng. vui lòng nhập lại.",
+                    number: "mã sản phẩm không đúng. vui lòng nhập lại."
+                },
+                descriptionCre: {
+                    required: "Vui lòng nhập mô tả.",
+                    minlength: "Mô tả có độ dài tối thiểu là 5 ký tự.",
+                    maxlength: "Mô tả có độ dài tối đa là 200 ký tự."
+                }
+            },
+            submitHandler: function () {
+                page.dialogs.commands.doCreate();
+            }
+        })
+
+        page.dialogs.elements.btnCreate.on('click' , () => {
+            page.dialogs.elements.formCreateProduct.trigger('submit');
+        })
+
+        page.commands.closeLoading = () => {
+            $('.fa-square-plus').removeClass('hide')
+            $('.lds-ring-btn').addClass("hide");
+            $('.lds-ring').addClass("hide");
+            page.elements.loader.addClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', false);
+        }
+
+        page.commands.showLoading = () => {
+            $('.fa-square-plus').addClass('hide')
+            $('.lds-ring-btn').removeClass("hide");
+            $('.lds-ring').removeClass("hide");
+            page.elements.loader.removeClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', true);
+        }
+
+        page.dialogs.commands.loadImageToCanvas = (imageFile, fileType, imageUrl) => {
+            page.dialogs.elements.imagePreviewCanvas.css("display", "");
+            page.dialogs.elements.wrapper.addClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 0);
+
+            let imageObj = new Image();
+
+            imageObj.onload = function () {
+                page.dialogs.elements.context.canvas.width = imageObj.width;
+                page.dialogs.elements.context.canvas.height = imageObj.height;
+                page.dialogs.elements.context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
+
+            };
+
+            if (fileType === "BINARY") {
+                imageObj.src = URL.createObjectURL(imageFile);
+            } else {
+                imageObj.src = imageUrl;
+            }
+        }
+
+        page.dialogs.commands.changeImagePreview = (elem) => {
+            let imageFile = elem[0].files[0];
+
+            if (imageFile) {
+                let reader = new FileReader();
+
+                reader.readAsDataURL(imageFile);
+
+                reader.onload = function (e) {
+                    if (e.target.readyState === FileReader.DONE) {
+                        page.dialogs.commands.loadImageToCanvas(imageFile, "BINARY", null);
+                    }
+                }
+            } else {
+                page.dialogs.commands.clearImagePreview();
+            }
+        }
+
+        page.dialogs.commands.clearImagePreview = () => {
+            page.dialogs.elements.imageFileCre.val("");
+            page.dialogs.elements.imagePreviewCanvas.css("display", "none");
+            page.dialogs.elements.wrapper.removeClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 1);
+        }
+
+        page.commands.loadData = () => {
+
+        }
+
+        page.initializeControlEvent = () => {
+
+            page.dialogs.elements.divImagePreview.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+
+            page.dialogs.elements.divFileName.on('click', () => {
+                page.dialogs.elements.imageFileCre.trigger('click');
+            })
+
+            page.dialogs.elements.imageFileCre.on("change", function () {
+                page.dialogs.commands.changeImagePreview(page.dialogs.elements.imageFileCre);
+            });
+
+            page.dialogs.elements.btnClearImagePreview.on('click', () => {
+                page.dialogs.commands.clearImagePreview();
+            })
+
+        }
+
+        $(() => {
+            page.commands.loadData();
+
+            page.initializeControlEvent();
+        })
+
+    </script>
+
+</body>
+
+</html>

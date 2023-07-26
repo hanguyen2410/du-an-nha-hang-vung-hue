@@ -1,0 +1,75 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="javascript">
+
+    <script src="/assets/jquery/jquery-3.6.0.min.js"></script>
+
+    <script src="/assets/jquery/jquery.validate.min.js"></script>
+
+    <script src="/assets/bootstrap/popper.min.js"></script>
+
+    <script src="/assets/bootstrap/bootstrap.min.js"></script>
+
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <script src="/assets/plugins/jquery.dataTables.min.js"></script>
+
+    <script src="/assets/plugins/dataTables.bootstrap.min.js"></script>
+
+    <script src="/assets/sweeralert2/sweetalert2.all.min.js"></script>
+
+    <script src="/assets/iziToast/toastr.min.js"></script>
+
+    <script src="/assets/apexcharts/apexcharts.js"></script>
+
+    <script src="/assets/js/script.js"></script>
+
+    <script src="/assets/js/AppBase.js"></script>
+
+    <script>
+        function toastFail(tittle) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "3000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            toastr["error"](tittle)
+        }
+
+        function toastSuccess(tittle) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "3000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            toastr["success"](tittle)
+        }
+
+    </script>
+
+
+</th:block>

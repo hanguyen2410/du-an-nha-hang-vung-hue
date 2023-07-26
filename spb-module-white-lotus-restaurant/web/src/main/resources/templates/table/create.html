@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>White Lotus | Tables</title>
+    <th:block th:replace="layout/head"/>
+
+</head>
+
+<body>
+
+    <!------------- LOADING SPINNER---------->
+    <th:block th:replace="layout/loading"/>
+    <!------------- LOADING SPINNER---------->
+
+    <!-- SIDEBAR -->
+    <th:block th:replace="layout/sidebar"/>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <th:block th:replace="layout/navbar"/>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main style="height: 100vh">
+            <!------  Tittle ----->
+            <h1>Add new table</h1>
+            <div class="cards">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="tile">
+                            <div class="tile-body">
+                                <!-------------------------------- EXACTLY HERE ----------------------------------->
+
+                                <form id="formCreateTable" method="post">
+                                    <div class="row">
+                                        <div class="form-group  col-md-12">
+                                            <label class="control-label" for="nameTableCre">Name Table</label>
+                                            <input class="form-control" type="text" placeholder="Enter Table Name"
+                                                   id="nameTableCre" name="nameTableCre">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-save" id="btnCreate" type="button">Thêm</button>
+                                    <a class="btn btn-cancel" href="/doc/table-data-oder.html">Hủy</a>
+                                    </form>
+
+                                    <!----------------------------- END EXACTLY HERE ---------------------------------->
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <!-- MAIN -->
+        </section>
+        <!-- CONTENT -->
+
+
+    <!---- JAVA SCRIPT ---->
+    <th:block th:replace="layout/javascript"/>
+
+    <script>
+
+        const page = {
+            urls: {
+                getAllTables: AppBase.API_TABLE,
+                getTableById: AppBase.API_TABLE,
+                createTable: AppBase.API_TABLE + "/create"
+            },
+            elements: {},
+            loadData: {},
+            commands: {},
+            dialogs: {
+                elements: {},
+                loadData: {},
+                commands: {},
+                alertDanger: {}
+            },
+            initializeEventControl: {}
+        }
+
+        page.dialogs.elements.nameTable = $("#nameTableCre");
+        page.dialogs.elements.btnCreate = $("#btnCreate");
+        page.dialogs.elements.formCreateTable = $("#formCreateTable");
+        page.elements.loader = $(".loader");
+
+
+        page.commands.doCreate = () => {
+            let name = page.dialogs.elements.nameTable.val();
+
+            let obj = {
+                name: name
+            }
+
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                url: page.urls.createTable,
+                data: JSON.stringify(obj),
+            })
+                .done((data) => {
+                    let tableDTO = data;
+
+                    page.dialogs.elements.formCreateTable[0].reset();
+                    toastSuccess("Thêm mới bàn <b>" + tableDTO.name + "</b> thành công.");
+
+
+                })
+                .fail((jqXHR) => {
+                    if (jqXHR.status === 404) {
+                        AppBase.errorAlert("Not found this category");
+                    } else {
+                        let errors = jqXHR.responseJSON;
+                        let str = '';
+                        $.each(errors, (k, v) => {
+                            str += `<li for="${k}Cre">${v}</li>`;
+                            $("#" + k + "Cre").addClass("error");
+                        })
+                        $('#createModal .modal-alert-danger').append(str);
+                        $('#createModal .modal-alert-danger').removeClass('hide').addClass('show');
+                    }
+                }).always(function () {
+                page.commands.closeLoading();
+            })
+        }
+
+
+        page.dialogs.elements.formCreateTable.validate({
+            rules: {
+                nameTableCre: {
+                    required: true,
+                    minlength: 4,
+                    maxlength: 20
+                }
+            },
+            messages: {
+                nameTableCre: {
+                    required: "Vui lòng nhập tên bàn.",
+                    minlength: "Tên sản phẩm có độ dài tối thiểu là ${0} ký tự.",
+                    maxlength: "Tên sản phẩm có độ dài tối đa là ${0} ký tự."
+                }
+            }, submitHandler: function () {
+                page.commands.doCreate();
+            }
+        })
+
+
+        page.commands.closeLoading = () => {
+            page.elements.loader.addClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', false);
+        }
+
+        page.commands.showLoading = () => {
+            page.elements.loader.removeClass("hide");
+            page.dialogs.elements.btnCreate.prop('disabled', true);
+        }
+
+        page.initializeEventControl = () => {
+
+            page.dialogs.elements.btnCreate.on("click", () => {
+                page.dialogs.elements.formCreateTable.trigger("submit");
+            })
+        }
+
+        page.commands.loadData = () => {
+
+        };
+
+        $(() => {
+            page.commands.loadData();
+            page.initializeEventControl();
+        });
+    </script>
+</body>
+
+</html>

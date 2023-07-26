@@ -1,0 +1,70 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="sidebar">
+
+    <section id="sidebar">
+        <a href="/home/staff" class="brand">
+            <img src="/assets/images/pink-lotus-icon.png" alt="logo" class="sidebar-logo">
+            <span>White Lotus</span>
+        </a>
+        <ul class="nav-menu">
+            <li>
+                <a href="/home/staff" class="active"><i class='bx icon bxs-dashboard'></i> Trang chủ</a>
+            </li>
+            <li class="divider" data-text="Main">
+                Danh mục sản phẩm
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx icon bxs-inbox'></i> Sản phẩm
+                    <i class='bx bx-chevron-right icon-right'></i>
+                </a>
+                <ul class="dropdown-nav-menu">
+                    <li>
+                        <a href="/home/staff/products">Danh sách</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class='bx icon bxs-group'></i> Nhân viên
+                    <i class='bx bx-chevron-right icon-right'></i>
+                </a>
+                <ul class="dropdown-nav-menu">
+                    <li>
+                        <a href="/home/staff/staffs">Danh sách</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx icon bxs-widget'></i> Bàn
+                    <i class='bx bx-chevron-right icon-right'></i>
+                </a>
+                <ul class="dropdown-nav-menu">
+                    <li>
+                        <a href="/home/staff/tables">Danh sách</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="divider" data-text="Main">
+                Danh mục thống kê
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx icon bxs-chart'></i> Thống kê
+                    <i class='bx bx-chevron-right icon-right'></i>
+                </a>
+                <ul class="dropdown-nav-menu">
+                    <li>
+                        <a href="/home/staff/stats/product">Sản phẩm</a>
+                    </li>
+                    <li>
+                        <a href="/report">Thống kê - Doanh thu</a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+</th:block>

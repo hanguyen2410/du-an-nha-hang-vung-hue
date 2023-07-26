@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--<iframe title="helo" id="billPapperTemp" style=" height:0px; width: 0px; position: absolute ">-->
+<div id="billPapperTempContent">
+  <div className="invoice-POS" style=" textAlign: center; margin: 0; padding: 0 ">
+  <center id="top">
+    <img src={Images.LOADING_LOGO} alt="Logo" height="50" style=" margin: 0 " />
+    <h2 style=" margin: 0 ">White Lotus Restaurant</h2>
+  </center>
+  <div id="mid">
+    <div className="info">
+      <p>
+        ĐC : 28 Nguyễn Tri Phương, phường Phú Nhuận, thành phố Huế
+        <br />
+        Email : CoffeeLegend@gmail.com
+        <br />
+        Điện thoại: 034677667
+        <br />
+      </p>
+    </div>
+  </div>
+  <Divider />
+  <h3 style=" margin: 0; padding: 0 ">HÓA ĐƠN BÁN HÀNG</h3>
+<!--  <h3 style=" margin: 0 ">{currentTable.name}</h3>-->
+    <h3 style=" margin: 0 "></h3>
+
+  <table style=" width:  100%  ">
+  <tbody>
+  <tr style=" fontSize:  13px  ">
+  <td>
+<!--    <p>Ngày: {new Date().toLocaleDateString()}</p>-->
+    <p>Ngày: </p>
+  </td>
+  <td style=" textAlign:  right  ">
+<!--  <p>Số: {currentTable.orderId}</p>-->
+    <p>Số: </p>
+
+  </td>
+  </tr>
+  <tr style=" fontSize:  13px  ">
+  <td colSpan={2}>
+    <p>Thu ngân: Thiên Phụng</p>
+  </td>
+  </tr>
+  <tr style=" fontSize:  13px  ">
+  <td colSpan={2}>
+<!--    <p>In lúc: {new Date().toLocaleTimeString()}</p>-->
+    <p>In lúc:</p>
+  </td>
+  </tr>
+  <tr style=" fontSize:  13px  ">
+  <td>
+    <p>Giờ vào: </p>
+<!--    <p>Giờ vào: {new Date().toLocaleTimeString()}</p>-->
+  </td>
+  <td>
+<!--    <p style=" textAlign:  right ; fontSize:  13px  ">-->
+<!--    Giờ ra: {new Date().toLocaleTimeString()}-->
+<!--    </p>-->
+    <p style=" textAlign:  right ; fontSize:  13px  ">
+      Giờ ra:
+    </p>
+  </td>
+  </tr>
+  </tbody>
+  </table>
+  <table
+          style=" width:  100% ; border:  1px dashed black ; borderCollapse:  collapse  "
+  className="tableBill"
+  >
+  <tbody>
+  <tr>
+    <th style=" border:  1px dashed black  ">
+    <p style=" textAlign:  left  ">MẶT HÀNG</p>
+    </th>
+    <th style=" border:  1px dashed black  ">
+    <p style=" textAlign:  center  ">SL</p>
+    </th>
+    <th style=" textAlign:  right ; border:  1px dashed black  ">
+    <p>GIÁ</p>
+    </th>
+    <th style=" textAlign:  right ; border:  1px dashed black  ">
+    <p>TỔNG</p>
+    </th>
+  </tr>
+
+  <tr key={index}>
+    <td style=" textAlign:  left ; border:  1px dashed black  ">
+<!--    <p>{item.productName}</p>-->
+      <p>lẩu cá lóc</p>
+    </td>
+    <td style=" textAlign:  center ; border:  1px dashed black  ">
+<!--    <p>{item.quantity}</p>-->
+      <p>2</p>
+    </td>
+    <td style=" textAlign:  right ; border:  1px dashed black  ">
+<!--    <p>{item.price.toLocaleString()}</p>-->
+      <p> 350000</p>
+    </td>
+    <td style=" textAlign:  right; border:  1px dashed black  ">
+<!--    <p>{item.amount.toLocaleString()}</p>-->
+      <p> 700000</p>
+    </td>
+  </tr>
+  </tbody>
+  </table>
+  <table style=" width:  100%  ">
+  <tbody>
+  <tr>
+    <td>
+      <h3>Tổng tiền:</h3>
+    </td>
+    <td style=" textAlign:  right  ">
+    <h3>700000</h3>
+    </td>
+  </tr>
+  </tbody>
+  </table>
+  <div id="bot">
+    <div id="legalcopy">
+      <p className="legal">
+        <strong>Cảm ơn Quý Khách, hẹn gặp lại!</strong>&nbsp;
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+<!--</iframe>-->
+
+</body>
+</html>

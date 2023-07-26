@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Danh sách hóa đơn ngày</title>
+    <th:block th:replace="layout/head"/>
+</head>
+
+<body>
+
+<!------------- LOADING SPINNER---------->
+<th:block th:replace="layout/loading"/>
+<!------------- LOADING SPINNER---------->
+
+<!-- SIDEBAR -->
+<th:block th:replace="layout/sidebar"/>
+<!-- SIDEBAR -->
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <th:block th:replace="layout/navbar"/>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <!------  Main header ----->
+        <div class="app-title">
+            <div class="app-title-child">
+                <h3>Danh sách hóa đơn</h3>
+            </div>
+            <div id="clock"></div>
+        </div>
+        <!---- End Main header --->
+        <div class="cards">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="be-content">
+                        <div class="main-content container-fluid">
+                            <div class="col-sm-12">
+                                <div class="card card-table">
+                                    <div class="card-header">
+                                        <div class="row ">
+                                            <div class="mr-2 d-flex justify-content-between mx-auto">
+                                                <div class=" ml-2 mr-2 form-label my-auto " style="font-size: 28px; font-weight: 600">
+                                                    Danh sách hóa đơn ngày
+                                                </div>
+                                                <div class="ml-2 mr-2 ">
+                                                    <input type="date" min="2020-01-01" max="" class="form-control"
+                                                           id='dayOrder'>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col-12">
+
+                                        </div>
+                                        <div class="table-responsive noSwipe col-12">
+                                            <table id="tbBill" class="table table-striped table-hover">
+                                                <thead>
+                                                <tr>
+
+                                                    <th  class="text-center">Bàn</th>
+                                                    <th  class="text-center">Thời gian</th>
+                                                    <th  class="text-center">Tên nhân viên</th>
+                                                    <th  class="text-center">Tổng tiền</th>
+                                                    <th  class="text-center">Trạng thái</th>
+                                                    <th  class="text-center">...</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div class="row" id="body-foot">
+                                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                                    [ 1 -- 10 ] của [ 16 ] sản phẩm
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                                    <ul class="pagination">
+                                                        <li class="paginate_button page-item previous disabled" id="sampleTable_previous">
+                                                            <a href="#" aria-controls="sampleTable" data-dt-idx="0" tabindex="0" class="page-link">Lùi</a>
+                                                        </li>
+                                                        <li class="paginate_button page-item active">
+                                                            <a href="#" aria-controls="sampleTable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                                                        </li>
+                                                        <li class="paginate_button page-item ">
+                                                            <a href="#" aria-controls="sampleTable" data-dt-idx="2" tabindex="0" class="page-link">2</a>
+                                                        </li>
+                                                        <li class="paginate_button page-item next" id="sampleTable_next">
+                                                            <a href="#" aria-controls="sampleTable" data-dt-idx="3" tabindex="0" class="page-link">Tiếp</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+
+
+<!---- JAVA SCRIPT ---->
+<th:block th:replace="layout/javascript"/>
+<script>
+
+    const page = {
+        urls: {
+            getBillsByDay: AppBase.API_BILL+ '/day',
+        },
+        elements: {},
+        loadData: {},
+        commands: {},
+        dialogs: {
+            elements: {},
+            loadData: {},
+            commands: {},
+        }
+    }
+
+    let currentPageNumber = 0;
+    let status;
+    let billOfDay;
+
+
+    page.elements.loader = $(".loader");
+    page.elements.tbOrder = $("#tbBill");
+    page.elements.tbOrderBody = $("#tbBill tbody");
+
+    page.elements.dayOrder = $("#dayOrder");
+    page.elements.btnViewOrder = $("#btnViewOrder");
+    page.dialogs.elements.btnSearch = $("#btnViewBill")
+    page.elements.loader = $(".bg-loading");
+
+
+
+
+    // ------------------------------------------------METHOD--------------------------------------------------------
+
+    page.dialogs.commands.getData = () => {
+        page.commands.showLoading();
+
+        let tempArray = location.href.split("/");
+        console.log('tempArray==', tempArray);
+        let defaultDay = tempArray.at(-1);
+
+        const [year, month, day] = defaultDay.split('-');
+
+        const date = `${year}-${month}-${day}`;
+
+        page.elements.dayOrder.val(date);
+
+        $.ajax({
+            type: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            url: page.urls.getBillsByDay + `/${date}/${currentPageNumber}`,
+        })
+            .done((data) => {
+                if (data == undefined){
+                    page.commands.closeLoading();
+                    toastFail("Không có dữ liệu phù hợp");
+                }
+                $('#tbBill tbody').empty();
+
+                listBills = data.content;
+
+                currentPageNumber = data.pageable.pageNumber;
+
+                totalPages = data.totalPages;
+
+                totalElements = data.totalElements;
+
+                $.each(listBills, (i, item) => {
+                    let str = page.commands.renderBill(item);
+                    $('#tbBill tbody').append(str);
+
+                })
+                let strPage = page.commands.renderPagination(currentPageNumber, totalElements, totalPages );
+                $('#body-foot').empty().append(strPage);
+
+                page.commands.addEventClick();
+
+            })
+            .fail(() => {
+                toastFail("Result Fail");
+            })
+            .always(function () {
+                page.commands.closeLoading();
+            })
+
+        console.log("date==", day)
+    }
+
+    page.dialogs.commands.getBillsByDay = () => {
+        page.commands.showLoading();
+        console.log("billOfDay", billOfDay);
+        $.ajax({
+            type: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            url: page.urls.getBillsByDay + `/${billOfDay}/${currentPageNumber}`,
+        })
+            .done((data) => {
+                if (data == undefined){
+                    page.commands.closeLoading();
+                    toastFail("Không có dữ liệu phù hợp");
+                }
+                $('#tbBill tbody').empty();
+
+                listBills = data.content;
+
+                currentPageNumber = data.pageable.pageNumber;
+
+                totalPages = data.totalPages;
+
+                totalElements = data.totalElements;
+
+                $.each(listBills, (i, item) => {
+                    let str = page.commands.renderBill(item);
+                    $('#tbBill tbody').append(str);
+
+                })
+                let strPage = page.commands.renderPagination(currentPageNumber, totalElements, totalPages );
+                $('#body-foot').empty().append(strPage);
+
+                page.commands.addEventClick();
+
+            })
+            .fail(() => {
+                toastFail("Result Fail");
+            })
+            .always(function () {
+                page.commands.closeLoading();
+            })
+    }
+
+    function formatDate(date = new Date()) {
+        return [
+            date.getFullYear(),
+            padTo2Digits(date.getMonth() + 1),
+            padTo2Digits(date.getDate() -10),
+        ].join('-');
+    }
+
+    page.commands.renderBill = (obj) => {
+
+        let strBtn = `<p  class="border border-success p-1 rounded my-auto">
+                        Đã thanh toán
+                       </p>`
+
+        return `
+          <tr id="tr_${obj.id}" class="primary">
+
+
+                    <td class="cell-detail text-center">
+                        ${obj.tableName}
+                    </td>
+
+                     <td class="cell-detail text-center">
+                        ${formDate(obj.createdAt)}
+                    </td>
+
+                    <td class="cell-detail text-center">
+                        ${obj.staffName}
+                    </td>
+
+                    <td class="cell-detail text-center">
+                        ${formatCurrency(obj.totalAmount)}
+                    </td>
+
+                    <td class="cell-detail text-center">
+                      ${strBtn}
+                    </td>
+
+                    <td class="cell-detail text-center">
+                    <a href="/bills/${obj.id}" target="_blank"> <i class="fa-solid fa-eye "></i> </a>
+                    </td>
+                </tr>
+        `
+    }
+    page.commands.renderPagination = (currentPageNumber, totalElements, totalPages) => {
+        let str = `
+                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                    [ 1 -- 20 ] của [ ${totalElements} ] sản phẩm
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                    <ul class="pagination">
+                `;
+
+
+        if (currentPageNumber != 0) {
+            str += `
+                            <li class="paginate_button page-item previous " id="sampleTable_previous" data-page="${currentPageNumber-1}">
+                                <a class="page-link" data-page="${currentPageNumber-1}">Lùi</a>
+                            </li>
+                            `;
+        } else {
+            str += `
+                            <li class="paginate_button page-item previous disabled" id="sampleTable_previous">
+                                <a class="page-link">Lùi</a>
+                            </li>
+                            `;
+        }
+
+        for(let i = 1; i <= totalPages ; i++ ) {
+            if ((i - 1 ) === currentPageNumber) {
+                str += `
+                            <li class="paginate_button page-item active">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+            }
+            else {
+                str += `
+                            <li class="paginate_button page-item">
+                                <a id="pageActive" class="page-link" data-page="${i-1}">${i}</a>
+                            </li>
+                        `;
+            }
+        }
+
+        if(currentPageNumber != (totalPages - 1)){
+            str += `
+                            <li class="paginate_button page-item next" id="sampleTable_next" >
+                                <a class="page-link" data-page="${currentPageNumber+1}">Tiếp</a>
+                            </li>
+                        `;
+        } else {
+            str += `
+                            <li class="paginate_button page-item next disabled" id="sampleTable_next">
+                                <a class="page-link">Tiếp</a>
+                            </li>
+                        `;
+        }
+
+        return str;
+    }
+
+    function formatCurrency(input) {
+        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(input)
+    }
+
+    function formDate(date) {
+        let arr = date.split("-")
+        date = arr[2] + "-" + arr[1] + "-" + arr[0]
+        return date;
+    }
+
+    page.commands.addEventChangePage = () => {
+        $('.page-link').on('click', function () {
+
+            let pageNumber = $(this).data('page');
+
+            billOfDay = page.elements.dayOrder.val();
+            currentPageNumber= pageNumber;
+
+            page.dialogs.commands.getBillsByDay();
+        })
+    }
+
+    page.elements.dayOrder.on('change' , () => {
+
+        billOfDay = page.elements.dayOrder.val();
+        currentPageNumber= 0;
+        page.dialogs.commands.getBillsByDay();
+    })
+
+    page.commands.addEventClick = () => {
+        page.commands.addEventChangePage();
+
+    }
+
+
+
+    page.commands.closeLoading = () => {
+
+        page.elements.loader.addClass("hide");
+    }
+
+    page.commands.showLoading = () => {
+
+        page.elements.loader.removeClass("hide");
+    }
+
+    page.initializeControlEvent = () => {
+
+    }
+
+    page.commands.loadData = () => {
+        page.dialogs.commands.getData();
+    }
+
+
+    $(() => {
+        page.commands.loadData();
+
+        page.initializeControlEvent();
+    })
+</script>
+
+
+</body>
+
+</html>

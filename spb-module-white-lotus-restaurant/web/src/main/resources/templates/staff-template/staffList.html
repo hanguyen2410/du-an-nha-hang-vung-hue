@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>White Lotus | Staffs</title>
+    <th:block th:replace="layout/head"/>
+</head>
+
+<body>
+<!-- SIDEBAR -->
+<th:block th:replace="staff-template/sidebar"/>
+<!-- SIDEBAR -->
+<!------------- Loading spinner---------->
+<div class="bg-loading hide">
+    <div class="lds-ring">
+        <div>
+
+        </div>
+    </div>
+    <img src="/assets/images/pink-lotus-icon.png" alt="logo" class="sidebar-logo loading-logo">
+</div>
+<!-----------End Loading spinner-------->
+
+<!------------------------------------------------------------- MODAL DETAIL ---------------------------------------->
+<div id="modalDetailStaff" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin nhân viên</h5>
+                <i class="fa-solid fa-xmark btn-close" data-bs-dismiss="modal" aria-label="Close"></i>
+            </div>
+            <div class="modal-body" id="detailModal">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" type="button" data-bs-dismiss="modal"><i
+                        class="fa-solid fa-square-xmark"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-------------------------------------------------------- END MODAL DETAIL ----------------------------------------->
+<!--------------------------------------------------------- CONTENT ------------------------------------------------->
+<section id="content">
+    <!-- NAVBAR -->
+    <th:block th:replace="layout/navbar"/>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <!------  Main header ----->
+        <div class="app-title">
+            <div class="app-title-child">
+                <h3>Danh sách nhân viên</h3>
+            </div>
+            <div id="clock"></div>
+        </div>
+        <!---- End Main header --->
+        <div class="cards">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tile">
+                        <div class="tile-body">
+                            <div class="row element-button">
+                                <div class="col-lg-4">
+                                </div>
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <form action="#" class="form-group d-flex float-right" onsubmit="return false;">
+                                        <div class="mr-2">
+                                            <input type="text" id="search" class="form-control"
+                                                   placeholder="Nhập từ khóa...">
+                                        </div>
+                                        <div class="mr-2">
+                                            <select class="form-control select2-container" id="filter">
+                                                <option value="-1">----All----</option>
+                                                <th:block th:each="item: ${roles}">
+                                                    <option th:text="${item.code}" th:value="${item.id}">
+
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-info" id="btnSearch">
+                                                <i class="fa fa-search"></i>
+                                                Bộ lọc
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+                            <table id="tbStaff" class="table table-hover table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th width="10"><input type="checkbox" id="all"></th>
+                                    <th>Id</th>
+                                    <th>Họ Tên</th>
+                                    <th>Tài Khoản</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Điên Thoại</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Chức vụ</th>
+                                    <th>...</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" id="body-foot">
+                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                    [ 1 -- 10 ] của [ 16 ] sản phẩm
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                    <ul class="pagination">
+                                        <li class="paginate_button page-item previous disabled"
+                                            id="sampleTable_previous">
+                                            <a href="#" aria-controls="sampleTable" data-dt-idx="0" tabindex="0"
+                                               class="page-link">Lùi</a>
+                                        </li>
+                                        <li class="paginate_button page-item active">
+                                            <a href="#" aria-controls="sampleTable" data-dt-idx="1" tabindex="0"
+                                               class="page-link">1</a>
+                                        </li>
+                                        <li class="paginate_button page-item ">
+                                            <a href="#" aria-controls="sampleTable" data-dt-idx="2" tabindex="0"
+                                               class="page-link">2</a>
+                                        </li>
+                                        <li class="paginate_button page-item next" id="sampleTable_next">
+                                            <a href="#" aria-controls="sampleTable" data-dt-idx="3" tabindex="0"
+                                               class="page-link">Tiếp</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- MAIN -->
+</section>
+<!------------------------------------------------------- END CONTENT ----------------------------------------------->
+
+
+<!---- JAVA SCRIPT ---->
+<th:block th:replace="layout/javascript"/>
+
+<script>
+    const page = {
+        urls: {
+            getAllStaff: AppBase.API_STAFF + '/get-all',
+            getById: AppBase.API_STAFF + '/',
+            getAllProvinces: AppBase.API_PROVINCE,
+            getAllDistricts: AppBase.API_DISTRICT,
+            getAllWards: AppBase.API_WARD,
+        },
+        elements: {},
+        loadData: {},
+        commands: {},
+        dialogs: {
+            elements: {},
+            loadData: {},
+            commands: {},
+        }
+    }
+    let staff = new Staff();
+    let currentKeyWord;
+    let roleIdFilter;
+    let currentStaffId;
+
+    page.dialogs.elements.btnSearch = $('#btnSearch');
+    page.dialogs.elements.modalDetailStaff = $('#modalDetailStaff');
+
+    page.elements.loader = $(".bg-loading");
+
+    // ------------------------------------------------METHOD--------------------------------------------------------
+    page.dialogs.commands.getAllStaffs = () => {
+
+        let obj = {
+            keyWord: currentKeyWord,
+            roleIdFilter: roleIdFilter
+        }
+
+        $.ajax({
+            type: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            url: page.urls.getAllStaff,
+            data: JSON.stringify(obj),
+        })
+            .done((data) => {
+                $('#tbStaff tbody').empty();
+
+                listStaffs = data.content;
+
+                currentPageNumber = data.pageable.pageNumber;
+
+                totalPages = data.totalPages;
+
+                selectedPage = data.pageable.pageNumber;
+
+                totalElements = data.totalElements;
+
+                $.each(listStaffs, (i, item) => {
+                    staff = item;
+                    let str = page.commands.renderStaff(staff);
+                    $('#tbStaff tbody').append(str);
+
+                })
+                let strPage = page.commands.renderPagination(currentPageNumber, totalElements, totalPages);
+                $('#body-foot').empty().append(strPage);
+                page.commands.addEventClick();
+                toastSuccess("Result");
+            })
+            .fail(() => {
+                toastFail("Result Fail");
+            })
+    }
+    page.dialogs.elements.btnSearch.on('click', () => {
+        currentKeyWord = $('#search').val();
+        roleIdFilter = +$('#filter').val();
+        page.dialogs.commands.getAllStaffs();
+    })
+
+
+    page.loadData.findStaffById = (id) => {
+        return $.ajax({
+            type: 'GET',
+            url: page.urls.getById + id
+        })
+            .done((data) => {
+
+            })
+            .fail(() => {
+                ;
+            })
+    }
+    page.commands.renderPagination = (currentPageNumber, totalElements, totalPages) => {
+        let str = `
+                            <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-start">
+                                <div class="dataTables_info" id="sampleTable_info" role="status" aria-live="polite">
+                                    [ 1 -- 5 ] của [ ${totalElements} ] sản phẩm
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-7 pagination-foot">
+                                <div class="dataTables_paginate paging_simple_numbers" id="sampleTable_paginate">
+                                    <ul class="pagination">
+                `;
+
+
+        if (currentPageNumber != 0) {
+            str += `
+                            <li class="paginate_button page-item previous " id="sampleTable_previous" data-page="${currentPageNumber - 1}">
+                                <a class="page-link">Lùi</a>
+                            </li>
+                            `;
+        } else {
+            str += `
+                            <li class="paginate_button page-item previous disabled" id="sampleTable_previous">
+                                <a class="page-link">Lùi</a>
+                            </li>
+                            `;
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            if ((i - 1) === currentPageNumber) {
+                str += `
+                            <li class="paginate_button page-item active">
+                                <a id="pageActive" class="page-link" data-page="${i - 1}">${i}</a>
+                            </li>
+                        `;
+            } else {
+                str += `
+                            <li class="paginate_button page-item">
+                                <a id="pageActive" class="page-link" data-page="${i - 1}">${i}</a>
+                            </li>
+                        `;
+            }
+        }
+
+        if (currentPageNumber != (totalPages - 1)) {
+            str += `
+                            <li class="paginate_button page-item next" id="sampleTable_next" ${currentPageNumber + 1}>
+                                <a class="page-link">Tiếp</a>
+                            </li>
+                        `;
+        } else {
+            str += `
+                            <li class="paginate_button page-item next disabled" id="sampleTable_next">
+                                <a class="page-link">Tiếp</a>
+                            </li>
+                        `;
+        }
+
+        return str;
+    }
+
+
+    page.commands.addEventChangePage = () => {
+        $('.page-link').on('click', function () {
+
+            let pageNumber = $(this).data('page');
+
+            currentPageNumber = pageNumber;
+
+            currentKeyWord = $('#search').val();
+
+            page.dialogs.commands.getAllStaffs();
+        })
+    }
+
+    page.commands.addEventDetailClick = () => {
+        $('#tbStaff').on('click', '.view', function () {
+            let staffId = $(this).data('id');
+
+            page.loadData.findStaffById(staffId).then((data) => {
+                staff = data;
+                let str = page.commands.renderStaffInfo(staff);
+                $('#modalDetailStaff #detailModal').empty();
+                $('#modalDetailStaff #detailModal').prepend(str);
+                page.dialogs.elements.modalDetailStaff.modal('show');
+            })
+                .catch((error) => {
+                    alert("Không tìm thấy nhân viên này");
+                });
+        })
+    }
+
+
+    page.commands.addEventClick = () => {
+        page.commands.addEventChangePage();
+        page.commands.addEventDetailClick();
+
+
+    }
+    page.commands.renderStaff = (staff) => {
+        return `
+                    <tr id="tr_${staff.id}" class="hover" style="font-weight: 600;">
+                                    <td width="10"><input type="checkbox" name="check_${staff.id}" value="${staff.id}"></td>-->
+                                    <td>${staff.id}</td>
+                                    <td>${staff.fullName}</td>
+                                    <td>${staff.username}</td>
+                                    <td>${staff.dob}</td>
+                                    <td>${staff.phone}</td>
+                                    <td>${staff.locationRegion.address}</td>
+                                    <td><span class="badge bg-success">${staff.role.code}</span></td>
+
+                                    <td class="align-items-center">
+                                        <button data-id="${staff.id}" class="btn btn-primary dropdown-item view" type="button" title="Chit tiết">
+                                            <i class="fa-regular fa-id-card"></i>
+                                         </button>
+                                    </td>
+                    </tr>
+                `;
+    }
+    page.commands.renderStaffInfo = (staff) => {
+        return `
+
+                <div class="container">
+                    <div class="main-body">
+
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb" class="main-breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="javascript:void(0)">Nhân viên</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Hồ sơ nhân viên</li>
+                            </ol>
+                        </nav>
+                        <!-- /Breadcrumb -->
+
+                        <div class="row gutters-sm">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-column align-items-center text-center">
+                                            <img src=${staff.fileUrl} alt="Admin" class="rounded-circle" width="150">
+                                            <div class="mt-3">
+                                                <h4>${staff.fullName}</h4>
+                                                <p class="text-secondary mb-1">${staff.role.code}</p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Họ tên</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                ${staff.fullName}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Email</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                ${staff.username}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">SĐT</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                ${staff.phone}
+                                            </div>
+                                        </div>
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Địa chỉ</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                <p class="text-muted font-size-sm">${staff.locationRegion.address} - ${staff.locationRegion.wardName} - ${staff.locationRegion.districtName} - ${staff.locationRegion.provinceName}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+    }
+
+    page.commands.closeLoading = () => {
+        $('.fa-square-plus').removeClass('hide')
+        $('.lds-ring-btn').addClass("hide");
+        $('.lds-ring').addClass("hide");
+        page.elements.loader.addClass("hide");
+    }
+
+    page.commands.showLoading = () => {
+        $('.fa-square-plus').addClass('hide')
+        $('.lds-ring-btn').removeClass("hide");
+        $('.lds-ring').removeClass("hide");
+        page.elements.loader.removeClass("hide");
+    }
+
+    page.initializeControlEvent = () => {
+      }
+
+    page.commands.loadData = () => {
+        page.dialogs.commands.getAllStaffs();
+    }
+    $(() => {
+        page.commands.loadData();
+
+        page.initializeControlEvent();
+    })
+
+</script>
+</body>
+
+</html>
